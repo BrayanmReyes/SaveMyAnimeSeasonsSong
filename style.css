@@ -102,6 +102,37 @@ main {
     margin: 0;
     font-size: 1.2rem;
     color: var(--secondary-color);
+    flex-grow: 1; /* Allow h2 to take up space */
+}
+
+.season-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.season-actions button {
+    background: none;
+    padding: 0;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    color: var(--text-color);
+    transition: background-color 0.2s;
+}
+
+.season-actions button:hover {
+    background-color: var(--border-color);
+}
+
+.season-actions button svg {
+    width: 20px;
+    height: 20px;
+    stroke: var(--text-color);
 }
 
 select, input[type="text"], input[type="url"], textarea, button {
@@ -446,6 +477,7 @@ legend {
 
 /* Read-Only Mode Styles */
 .readonly-mode #season-manager #add-season-btn,
+.readonly-mode #season-manager #edit-season-btn,
 .readonly-mode #season-manager #delete-season-btn,
 .readonly-mode .fab,
 .readonly-mode .anime-actions {

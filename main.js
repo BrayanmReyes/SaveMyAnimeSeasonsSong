@@ -165,15 +165,20 @@ function setupEventListeners() {
         // Accordion toggle logic
         const header = e.target.closest('.anime-card-header');
         if (header) {
-            const details = header.nextElementSibling;
-            const card = header.parentElement;
-            card.classList.toggle('expanded');
+            const clickedCard = header.parentElement;
+            const isAlreadyExpanded = clickedCard.classList.contains('expanded');
 
-            // Basic slide toggle animation
-            if (card.classList.contains('expanded')) {
+            // Close all other cards
+            ui.DOM.animeListContainer.querySelectorAll('.anime-card').forEach(card => {
+                card.classList.remove('expanded');
+                card.querySelector('.anime-details').style.maxHeight = null;
+            });
+
+            // If the clicked card was not already open, open it
+            if (!isAlreadyExpanded) {
+                clickedCard.classList.add('expanded');
+                const details = clickedCard.querySelector('.anime-details');
                 details.style.maxHeight = details.scrollHeight + 'px';
-            } else {
-                details.style.maxHeight = '0px';
             }
         }
 
