@@ -1,4 +1,8 @@
 // Lógica para Anime Tracker
+const { createClient } = supabase;
+const SUPABASE_URL = 'https://qlbhdapjajsyhznbodvh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFsYmhkYXBqYWpzeWh6bmJvZHZoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQzNjY0NjcsImV4cCI6MjA2OTk0MjQ2N30.iZGe8rQColcutlWq13zpkq5RZaYur4jfOt04p0bW11s';
+const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 document.addEventListener('DOMContentLoaded', () => {
     const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
@@ -34,23 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentSeasonId = null;
     let editingAnimeId = null;
 
-    // --- GESTIÓN DE DATOS ---
-    const getAppData = () => {
-        const data = localStorage.getItem('animeTrackerData');
-        if (data) {
-            return JSON.parse(data);
-        }
-        // Datos iniciales si no hay nada guardado
-        return {
-            seasons: [],
-            nextSeasonId: 1,
-            nextAnimeId: 1,
-        };
-    };
-
-    const saveAppData = (data) => {
-        localStorage.setItem('animeTrackerData', JSON.stringify(data));
-    };
+    // --- GESTIÓN DE DATOS CON SUPABASE ---
+    // Las funciones ahora interactuarán directamente con la API de Supabase
 
     // --- LÓGICA DE FORMULARIO DINÁMICO ---
     const createSongEntryForm = (song = {}) => {
@@ -68,21 +57,35 @@ document.addEventListener('DOMContentLoaded', () => {
         return entryDiv;
     };
 
-    // --- RENDERIZADO ---
-    const renderAnimes = (seasonId) => {
-        const data = getAppData();
-        const season = data.seasons.find(s => s.id === seasonId);
-        animeListContainer.innerHTML = ''; // Limpiar la lista actual
-
-        if (!season) {
-            animeListContainer.innerHTML = '<p>Selecciona una temporada o crea una nueva para empezar.</p>';
+    // --- RENDERIZADO CON SUPABASE ---
+    const renderAnimes = async (seasonId) => {
+        if (!seasonId) {
+            animeListContainer.innerHTML = '<p>Selecciona una temporada para ver los animes.</p>';
             return;
         }
+
+        const { data: animes, error } = await _supabase
+            .from('animes')
+            .select(`
+                id, name, day_of_week, comments,
+                openings (id, jp_name, romaji_name, youtube_url),
+                endings (id, jp_name, romaji_name, youtube_url)
+            `)
+            .eq('season_id', seasonId)
+            .order('created_at');
+
+        if (error) {
+            console.error('Error fetching animes:', error);
+            animeListContainer.innerHTML = '<p>Error al cargar los animes.</p>';
+            return;
+        }
+
+        animeListContainer.innerHTML = ''; // Limpiar
 
         const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo', 'Especial'];
         let animesFound = false;
         days.forEach(day => {
-            const animesOfTheDay = season.animes.filter(a => a.day_of_week === day);
+            const animesOfTheDay = animes.filter(a => a.day_of_week === day);
             if (animesOfTheDay.length > 0) {
                 animesFound = true;
                 const daySection = document.createElement('section');
@@ -102,9 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <li class="song-item">
                                 <strong class="song-title">OP ${index + 1}:</strong>
                                 <div class="song-details">
-                                    <span><strong>JP:</strong> ${op.jpName || 'N/A'}</span>
-                                    <span><strong>Romaji:</strong> ${op.romajiName || 'N/A'}</span>
-                                    ${op.youtubeUrl ? `<a href="${op.youtubeUrl}" target="_blank" title="${op.youtubeUrl}">YouTube</a>` : ''}
+                                    <span><strong>JP:</strong> ${op.jp_name || 'N/A'}</span>
+                                    <span><strong>Romaji:</strong> ${op.romaji_name || 'N/A'}</span>
+                                    ${op.youtube_url ? `<a href="${op.youtube_url}" target="_blank" title="${op.youtube_url}">YouTube</a>` : ''}
                                 </div>
                             </li>`).join('')
                         : '<li>N/A</li>';
@@ -114,9 +117,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             <li class="song-item">
                                 <strong class="song-title">ED ${index + 1}:</strong>
                                 <div class="song-details">
-                                    <span><strong>JP:</strong> ${en.jpName || 'N/A'}</span>
-                                    <span><strong>Romaji:</strong> ${en.romajiName || 'N/A'}</span>
-                                    ${en.youtubeUrl ? `<a href="${en.youtubeUrl}" target="_blank" title="${en.youtubeUrl}">YouTube</a>` : ''}
+                                    <span><strong>JP:</strong> ${en.jp_name || 'N/A'}</span>
+                                    <span><strong>Romaji:</strong> ${en.romaji_name || 'N/A'}</span>
+                                    ${en.youtube_url ? `<a href="${en.youtube_url}" target="_blank" title="${en.youtube_url}">YouTube</a>` : ''}
                                 </div>
                             </li>`).join('')
                         : '<li>N/A</li>';
@@ -148,38 +151,46 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    const renderSeasons = () => {
-        const data = getAppData();
+    const renderSeasons = async () => {
+        const { data: seasons, error } = await _supabase.from('seasons').select('*').order('created_at');
+
+        if (error) {
+            console.error('Error fetching seasons:', error);
+            seasonSelector.innerHTML = '<option>Error al cargar</option>';
+            return;
+        }
+
         const lastSelectedSeason = localStorage.getItem('currentSeasonId');
 
         seasonSelector.innerHTML = '';
-        if (data.seasons.length === 0) {
+        if (seasons.length === 0) {
             seasonSelector.innerHTML = '<option>No hay temporadas</option>';
+        } else {
+            seasons.forEach(season => {
+                const option = document.createElement('option');
+                option.value = season.id;
+                option.textContent = season.name;
+                seasonSelector.appendChild(option);
+            });
         }
-        data.seasons.forEach(season => {
-            const option = document.createElement('option');
-            option.value = season.id;
-            option.textContent = season.name;
-            seasonSelector.appendChild(option);
-        });
 
-        if (lastSelectedSeason && data.seasons.some(s => s.id == lastSelectedSeason)) {
+        if (lastSelectedSeason && seasons.some(s => s.id == lastSelectedSeason)) {
             seasonSelector.value = lastSelectedSeason;
             currentSeasonId = parseInt(lastSelectedSeason);
-        } else if (data.seasons.length > 0) {
-            currentSeasonId = data.seasons[0].id;
+        } else if (seasons.length > 0) {
+            currentSeasonId = seasons[0].id;
             seasonSelector.value = currentSeasonId;
         } else {
             currentSeasonId = null;
         }
 
-        if(currentSeasonId) {
+        if (currentSeasonId) {
             localStorage.setItem('currentSeasonId', currentSeasonId);
         } else {
             localStorage.removeItem('currentSeasonId');
         }
 
-        renderAnimes(currentSeasonId);
+        await renderAnimes(currentSeasonId);
     };
 
     // --- LÓGICA DE MODALES ---
@@ -205,11 +216,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- INICIALIZACIÓN ---
-    const init = () => {
+    const init = async () => {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.className = savedTheme === 'dark' ? 'dark-mode' : '';
         updateThemeIcons(savedTheme);
-        renderSeasons();
+        await renderSeasons();
     };
 
     init(); // Cargar todo al iniciar
@@ -263,44 +274,44 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Guardar temporada
-    saveSeasonBtn.addEventListener('click', () => {
+    saveSeasonBtn.addEventListener('click', async () => {
         const name = seasonNameInput.value.trim();
         if (name) {
-            const data = getAppData();
-            const newSeason = {
-                id: data.nextSeasonId++,
-                name: name,
-                animes: [],
-            };
-            data.seasons.push(newSeason);
-            currentSeasonId = newSeason.id; // Cambiar a la nueva temporada
-            saveAppData(data);
-            renderSeasons();
-            closeModal(addSeasonModal);
-            seasonNameInput.value = '';
+            const { error } = await _supabase.from('seasons').insert({ name: name });
+            if (error) {
+                console.error('Error creating season:', error);
+                alert('No se pudo crear la temporada.');
+            } else {
+                await renderSeasons();
+                closeModal(addSeasonModal);
+                seasonNameInput.value = '';
+            }
         } else {
             alert('El nombre de la temporada no puede estar vacío.');
         }
     });
 
     // Eliminar temporada
-    deleteSeasonBtn.addEventListener('click', () => {
+    deleteSeasonBtn.addEventListener('click', async () => {
         if (!currentSeasonId) {
             alert('No hay ninguna temporada seleccionada para eliminar.');
             return;
         }
         if (confirm('¿Estás seguro de que quieres eliminar la temporada seleccionada y todos sus animes?')) {
-            const data = getAppData();
-            data.seasons = data.seasons.filter(s => s.id !== currentSeasonId);
-            saveAppData(data);
-            localStorage.removeItem('currentSeasonId');
-            currentSeasonId = null; // Desseleccionar
-            renderSeasons();
+            const { error } = await _supabase.from('seasons').delete().eq('id', currentSeasonId);
+            if (error) {
+                console.error('Error deleting season:', error);
+                alert('No se pudo eliminar la temporada.');
+            } else {
+                localStorage.removeItem('currentSeasonId');
+                currentSeasonId = null;
+                await renderSeasons();
+            }
         }
     });
 
     // Guardar Anime (Crear y Actualizar)
-    saveAnimeBtn.addEventListener('click', () => {
+    saveAnimeBtn.addEventListener('click', async () => {
         const name = animeNameInput.value.trim();
         const day = dayOfWeekInput.value;
         const comments = commentsInput.value.trim();
@@ -311,48 +322,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         const openings = Array.from(openingsList.querySelectorAll('.song-entry')).map(entry => ({
-            jpName: entry.querySelector('.song-jp-name').value.trim(),
-            romajiName: entry.querySelector('.song-romaji-name').value.trim(),
-            youtubeUrl: entry.querySelector('.song-youtube-url').value.trim(),
-        })).filter(s => s.jpName || s.romajiName || s.youtubeUrl);
+            jp_name: entry.querySelector('.song-jp-name').value.trim(),
+            romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
+            youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
+        })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
 
         const endings = Array.from(endingsList.querySelectorAll('.song-entry')).map(entry => ({
-            jpName: entry.querySelector('.song-jp-name').value.trim(),
-            romajiName: entry.querySelector('.song-romaji-name').value.trim(),
-            youtubeUrl: entry.querySelector('.song-youtube-url').value.trim(),
-        })).filter(s => s.jpName || s.romajiName || s.youtubeUrl);
-
-        const data = getAppData();
-        const season = data.seasons.find(s => s.id === currentSeasonId);
+            jp_name: entry.querySelector('.song-jp-name').value.trim(),
+            romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
+            youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
+        })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
 
         if (editingAnimeId) {
             // Actualizar
-            const anime = season.animes.find(a => a.id === editingAnimeId);
-            anime.name = name;
-            anime.day_of_week = day;
-            anime.openings = openings;
-            anime.endings = endings;
-            anime.comments = comments;
-        } else {
-            // Crear
-            const newAnime = {
-                id: data.nextAnimeId++,
+            const { error: animeError } = await _supabase.from('animes').update({
                 name,
                 day_of_week: day,
-                openings,
-                endings,
                 comments,
-            };
-            season.animes.push(newAnime);
+            }).eq('id', editingAnimeId);
+
+            if (animeError) {
+                console.error('Error updating anime:', animeError);
+                return alert('No se pudo actualizar el anime.');
+            }
+
+            // Borrar y re-insertar openings y endings
+            await _supabase.from('openings').delete().eq('anime_id', editingAnimeId);
+            await _supabase.from('endings').delete().eq('anime_id', editingAnimeId);
+
+            if (openings.length > 0) {
+                const openingsWithAnimeId = openings.map(o => ({ ...o, anime_id: editingAnimeId }));
+                await _supabase.from('openings').insert(openingsWithAnimeId);
+            }
+            if (endings.length > 0) {
+                const endingsWithAnimeId = endings.map(e => ({ ...e, anime_id: editingAnimeId }));
+                await _supabase.from('endings').insert(endingsWithAnimeId);
+            }
+
+        } else {
+            // Crear
+            const { data: newAnimeData, error: animeError } = await _supabase.from('animes').insert({
+                name,
+                day_of_week: day,
+                comments,
+                season_id: currentSeasonId,
+            }).select().single();
+
+            if (animeError) {
+                console.error('Error creating anime:', animeError);
+                return alert('No se pudo crear el anime.');
+            }
+
+            const newAnimeId = newAnimeData.id;
+            if (openings.length > 0) {
+                const openingsWithAnimeId = openings.map(o => ({ ...o, anime_id: newAnimeId }));
+                await _supabase.from('openings').insert(openingsWithAnimeId);
+            }
+            if (endings.length > 0) {
+                const endingsWithAnimeId = endings.map(e => ({ ...e, anime_id: newAnimeId }));
+                await _supabase.from('endings').insert(endingsWithAnimeId);
+            }
         }
 
-        saveAppData(data);
-        renderAnimes(currentSeasonId);
+        await renderAnimes(currentSeasonId);
         closeModal(addAnimeModal);
     });
 
     // Acciones de Anime (Editar y Eliminar)
-    animeListContainer.addEventListener('click', (e) => {
+    animeListContainer.addEventListener('click', async (e) => {
         const animeCard = e.target.closest('.anime-card');
         if (!animeCard) return;
 
@@ -360,30 +397,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (e.target.classList.contains('delete-anime-btn')) {
             if (confirm('¿Estás seguro de que quieres eliminar este anime?')) {
-                const data = getAppData();
-                const season = data.seasons.find(s => s.id === currentSeasonId);
-                season.animes = season.animes.filter(a => a.id !== animeId);
-                saveAppData(data);
-                renderAnimes(currentSeasonId);
+                const { error } = await _supabase.from('animes').delete().eq('id', animeId);
+                if (error) {
+                    console.error('Error deleting anime:', error);
+                    alert('No se pudo eliminar el anime.');
+                } else {
+                    await renderAnimes(currentSeasonId);
+                }
             }
         } else if (e.target.classList.contains('edit-anime-btn')) {
-            const data = getAppData();
-            const season = data.seasons.find(s => s.id === currentSeasonId);
-            const anime = season.animes.find(a => a.id === animeId);
+            const { data: anime, error } = await _supabase
+                .from('animes')
+                .select(`*, openings(*), endings(*)`)
+                .eq('id', animeId)
+                .single();
+
+            if (error) {
+                console.error('Error fetching anime details:', error);
+                return alert('No se pudieron cargar los detalles del anime.');
+            }
 
             editingAnimeId = anime.id;
             addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
             animeNameInput.value = anime.name;
             dayOfWeekInput.value = anime.day_of_week;
 
-            openingsList.innerHTML = ''; // Limpiar
+            openingsList.innerHTML = '';
             if(anime.openings) {
-                anime.openings.forEach(op => openingsList.appendChild(createSongEntryForm(op)));
+                anime.openings.forEach(op => openingsList.appendChild(createSongEntryForm({ jpName: op.jp_name, romajiName: op.romaji_name, youtubeUrl: op.youtube_url })));
             }
 
-            endingsList.innerHTML = ''; // Limpiar
+            endingsList.innerHTML = '';
             if(anime.endings) {
-                anime.endings.forEach(en => endingsList.appendChild(createSongEntryForm(en)));
+                anime.endings.forEach(en => endingsList.appendChild(createSongEntryForm({ jpName: en.jp_name, romajiName: en.romaji_name, youtubeUrl: en.youtube_url })));
             }
 
             commentsInput.value = anime.comments;
