@@ -73,3 +73,18 @@
 #login-modal .modal-content {
     max-width: 400px;
 }
+
+#add-anime-modal .modal-content {
+    max-width: 700px;
+}
+
+#add-anime-modal fieldset {
+    background-color: var(--song-item-odd-bg);
+    border: 1px solid var(--border-color);
+}
+
+#add-anime-modal .song-entry {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+}

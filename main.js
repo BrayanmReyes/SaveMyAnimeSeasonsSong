@@ -76,6 +76,14 @@ function setupEventListeners() {
         });
     });
 
+    ui.DOM.addOpeningBtn.addEventListener('click', () => {
+        ui.DOM.openingsList.appendChild(ui.createSongEntryForm());
+    });
+
+    ui.DOM.addEndingBtn.addEventListener('click', () => {
+        ui.DOM.endingsList.appendChild(ui.createSongEntryForm());
+    });
+
     ui.DOM.editSeasonBtn.addEventListener('click', () => {
         if (!state.currentSeasonId) return alert('No hay ninguna temporada seleccionada para editar.');
 
