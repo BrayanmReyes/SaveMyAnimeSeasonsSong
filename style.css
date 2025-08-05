@@ -140,6 +140,17 @@ main {
     width: 20px;
     height: 20px;
     stroke: var(--text-color);
+    transition: stroke 0.2s;
+}
+
+#add-season-btn:hover svg {
+    stroke: var(--action-add-color);
+}
+#edit-season-btn:hover svg {
+    stroke: var(--action-edit-color);
+}
+#delete-season-btn:hover svg {
+    stroke: var(--action-delete-color);
 }
 
 select, input[type="text"], input[type="url"], textarea, button {
@@ -167,14 +178,6 @@ button {
 
 button:hover {
     background-color: var(--primary-dark);
-}
-
-#delete-season-btn {
-    background-color: var(--danger-color);
-}
-
-#delete-season-btn:hover {
-    background-color: var(--danger-color-dark);
 }
 
 .day-section {
@@ -207,6 +210,10 @@ button:hover {
 .anime-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 15px var(--shadow-color);
+}
+
+.anime-card.expanded {
+    border-left: 4px solid var(--action-edit-color);
 }
 
 .anime-card h4 {

@@ -89,7 +89,7 @@
 
 #add-anime-modal fieldset {
     background-color: var(--song-item-odd-bg);
-    border: 1px solid var(--border-color);
+    border: 1px dashed var(--border-color);
 }
 
 #add-anime-modal .song-entry {

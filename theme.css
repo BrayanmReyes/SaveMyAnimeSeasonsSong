@@ -22,6 +22,9 @@
     --add-entry-btn-hover-bg: #4b5563;
     --action-primary-bg: var(--primary-main);
     --action-primary-hover-bg: var(--primary-dark);
+    --action-add-color: #10b981;
+    --action-edit-color: #3b82f6;
+    --action-delete-color: #ef4444;
 }
 
 body.dark-mode {
@@ -36,8 +39,6 @@ body.dark-mode {
     --card-bg: #1e293b;          /* Slightly lighter card bg */
     --border-color: #334155;     /* More visible border */
     --shadow-color: rgba(0, 0, 0, 0.5);
-    --danger-color: #f87171;
-    --danger-color-dark: #ef4444;
 
     --song-item-bg: #334155;
     --song-item-odd-bg: #475569;
@@ -47,4 +48,8 @@ body.dark-mode {
     --action-primary-hover-bg: var(--primary-light);
     --action-secondary-bg: #475569;
     --add-entry-btn-hover-bg: #64748b;
+
+    --action-add-color: #34d399;
+    --action-edit-color: #60a5fa;
+    --action-delete-color: #f87171;
 }
