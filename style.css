@@ -216,6 +216,10 @@ button:hover {
     align-items: center;
 }
 
+.anime-actions button svg {
+    pointer-events: none;
+}
+
 .anime-actions button.edit-anime-btn svg {
     stroke: #10b981; /* Green */
 }
