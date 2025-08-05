@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anime Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Anime Tracker</h1>
+    </header>
+
+    <main>
+        <section id="season-manager">
+            <h2>Temporadas</h2>
+            <select id="season-selector"></select>
+            <button id="add-season-btn">Nueva Temporada</button>
+            <button id="delete-season-btn">Eliminar Temporada</button>
+        </section>
+
+        <section id="anime-list-container">
+            <!-- Los animes de la temporada seleccionada se mostrarán aquí -->
+        </section>
+
+        <button id="add-anime-btn" class="fab">+</button>
+    </main>
+
+    <!-- Modal para agregar nueva temporada -->
+    <div id="add-season-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Nueva Temporada</h2>
+            <input type="text" id="season-name-input" placeholder="Nombre de la temporada (ej. Verano 2024)">
+            <button id="save-season-btn">Guardar</button>
+        </div>
+    </div>
+
+    <!-- Modal para agregar nuevo anime -->
+    <div id="add-anime-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>Agregar Anime</h2>
+            <input type="text" id="anime-name-input" placeholder="Nombre del Anime">
+            <select id="day-of-week-input">
+                <option value="Lunes">Lunes</option>
+                <option value="Martes">Martes</option>
+                <option value="Miércoles">Miércoles</option>
+                <option value="Jueves">Jueves</option>
+                <option value="Viernes">Viernes</option>
+                <option value="Sábado">Sábado</option>
+                <option value="Domingo">Domingo</option>
+                <option value="Especial">Especial (OVA, Película, etc.)</option>
+            </select>
+            <textarea id="openings-input" placeholder="Openings (uno por línea)"></textarea>
+            <textarea id="endings-input" placeholder="Endings (uno por línea)"></textarea>
+            <textarea id="comments-input" placeholder="Comentarios"></textarea>
+            <button id="save-anime-btn">Guardar</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
