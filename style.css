@@ -431,3 +431,11 @@ legend {
         justify-self: stretch; /* Full width */
     }
 }
+
+/* Read-Only Mode Styles */
+.readonly-mode #season-manager #add-season-btn,
+.readonly-mode #season-manager #delete-season-btn,
+.readonly-mode .fab,
+.readonly-mode .anime-actions {
+    display: none !important;
+}

@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggle = document.getElementById('theme-toggle');
     const themeIconSun = document.getElementById('theme-icon-sun');
     const themeIconMoon = document.getElementById('theme-icon-moon');
+    const loginBtn = document.getElementById('login-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const loginModal = document.getElementById('login-modal');
+    const passwordInput = document.getElementById('password-input');
+    const loginSubmitBtn = document.getElementById('login-submit-btn');
 
     let currentSeasonId = null;
     let editingAnimeId = null;
@@ -215,11 +220,35 @@ document.addEventListener('DOMContentLoaded', () => {
         themeIconMoon.style.display = theme === 'dark' ? 'block' : 'none';
     };
 
+    // --- LÓGICA DE AUTENTICACIÓN ---
+    const ADMIN_PASSWORD = 'admin'; // NOTA: Esto es inseguro. En una app real, usar variables de entorno.
+
+    const enterAdminMode = () => {
+        sessionStorage.setItem('isAdmin', 'true');
+        document.body.classList.remove('readonly-mode');
+        loginBtn.style.display = 'none';
+        logoutBtn.style.display = 'inline-block';
+    };
+
+    const exitAdminMode = () => {
+        sessionStorage.removeItem('isAdmin');
+        document.body.classList.add('readonly-mode');
+        loginBtn.style.display = 'inline-block';
+        logoutBtn.style.display = 'none';
+    };
+
     // --- INICIALIZACIÓN ---
     const init = async () => {
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.className = savedTheme === 'dark' ? 'dark-mode' : '';
         updateThemeIcons(savedTheme);
+
+        if (sessionStorage.getItem('isAdmin') === 'true') {
+            enterAdminMode();
+        } else {
+            exitAdminMode();
+        }
+
         await renderSeasons();
     };
 
@@ -435,6 +464,23 @@ document.addEventListener('DOMContentLoaded', () => {
             commentsInput.value = anime.comments;
 
             openModal(addAnimeModal);
+        }
+    });
+
+    loginBtn.addEventListener('click', () => openModal(loginModal));
+
+    logoutBtn.addEventListener('click', () => {
+        exitAdminMode();
+    });
+
+    loginSubmitBtn.addEventListener('click', () => {
+        if (passwordInput.value === ADMIN_PASSWORD) {
+            enterAdminMode();
+            closeModal(loginModal);
+            passwordInput.value = '';
+        } else {
+            alert('Contraseña incorrecta.');
+            passwordInput.value = '';
         }
     });
 });
