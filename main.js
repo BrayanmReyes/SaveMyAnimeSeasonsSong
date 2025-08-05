@@ -170,6 +170,14 @@ function setupEventListeners() {
     });
 
     ui.DOM.animeListContainer.addEventListener('click', async (e) => {
+        // YouTube link click
+        if (e.target.closest('.youtube-link')) {
+            e.preventDefault();
+            const url = e.target.closest('.youtube-link').href;
+            ui.openVideoModal(url);
+            return;
+        }
+
         // Accordion toggle logic
         const header = e.target.closest('.anime-card-header');
         if (header) {

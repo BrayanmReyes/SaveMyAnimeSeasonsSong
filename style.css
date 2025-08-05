@@ -274,11 +274,26 @@ button:hover {
     text-decoration: underline;
 }
 
-.youtube-link svg {
-    stroke: #ff0000;
-    width: 20px;
-    height: 20px;
+.youtube-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: #ff0000;
+    transition: transform 0.2s;
     vertical-align: middle;
+}
+
+.youtube-link:hover {
+    transform: scale(1.1);
+}
+
+.youtube-link svg {
+    stroke: white;
+    width: 16px;
+    height: 16px;
 }
 
 .anime-actions {

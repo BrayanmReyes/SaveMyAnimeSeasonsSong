@@ -30,6 +30,8 @@ export const DOM = {
     loginModal: document.getElementById('login-modal'),
     passwordInput: document.getElementById('password-input'),
     loginSubmitBtn: document.getElementById('login-submit-btn'),
+    videoModal: document.getElementById('video-modal'),
+    youtubeIframe: document.getElementById('youtube-iframe'),
 };
 
 export const createSongEntryForm = (song = {}) => {
@@ -119,8 +121,23 @@ export const openModal = (modal) => {
     modal.style.display = 'block';
 };
 
+export const openVideoModal = (url) => {
+    const videoIdMatch = url.match(/(?:v=|\/embed\/|\.be\/)([\w-]{11})/);
+    if (!videoIdMatch) {
+        console.error("Invalid YouTube URL");
+        return;
+    }
+    const videoId = videoIdMatch[1];
+    const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    DOM.youtubeIframe.src = embedUrl;
+    openModal(DOM.videoModal);
+};
+
 export const closeModal = (modal) => {
     modal.style.display = 'none';
+    if (modal === DOM.videoModal) {
+        DOM.youtubeIframe.src = ''; // Stop video playback
+    }
 };
 
 export const updateThemeIcons = (theme) => {
