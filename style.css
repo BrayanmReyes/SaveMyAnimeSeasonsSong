@@ -389,14 +389,15 @@ legend {
 
 .add-entry-btn {
     background-color: var(--action-add-color);
-    width: auto;
-    display: inline-flex;
+    width: 36px;
+    height: 36px;
+    display: flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    justify-content: center;
+    padding: 0;
     color: white;
     border: none;
-    border-radius: 6px; /* Match other buttons */
+    border-radius: 50%;
 }
 
 .add-entry-btn svg {
