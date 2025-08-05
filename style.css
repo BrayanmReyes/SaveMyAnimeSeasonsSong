@@ -384,8 +384,18 @@ legend {
 .add-entry-btn {
     background-color: var(--action-secondary-bg);
     width: auto;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     padding: 0.5rem 1rem;
+    color: white;
+    border: none;
+}
+
+.add-entry-btn svg {
+    width: 18px;
+    height: 18px;
+    stroke: white;
 }
 
 .add-entry-btn:hover {

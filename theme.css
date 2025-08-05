@@ -53,3 +53,7 @@ body.dark-mode {
     --action-edit-color: #60a5fa;
     --action-delete-color: #f87171;
 }
+
+body.dark-mode select {
+    color: var(--text-color);
+}

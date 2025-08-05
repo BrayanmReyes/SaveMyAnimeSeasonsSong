@@ -27,6 +27,7 @@
 
     <main>
         <section id="season-manager">
+            <h2>Temporadas</h2>
             <select id="season-selector"></select>
             <div class="season-actions">
                 <button id="add-season-btn" title="Nueva Temporada">
@@ -77,12 +78,18 @@
             <fieldset>
                 <legend>Openings</legend>
                 <div id="openings-list" class="dynamic-list"></div>
-                <button type="button" id="add-opening-btn" class="add-entry-btn">Agregar Opening</button>
+                <button type="button" id="add-opening-btn" class="add-entry-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    <span>Agregar Opening</span>
+                </button>
             </fieldset>
             <fieldset>
                 <legend>Endings</legend>
                 <div id="endings-list" class="dynamic-list"></div>
-                <button type="button" id="add-ending-btn" class="add-entry-btn">Agregar Ending</button>
+                <button type="button" id="add-ending-btn" class="add-entry-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    <span>Agregar Ending</span>
+                </button>
             </fieldset>
             <textarea id="comments-input" placeholder="Comentarios"></textarea>
             <button id="save-anime-btn">Guardar</button>
