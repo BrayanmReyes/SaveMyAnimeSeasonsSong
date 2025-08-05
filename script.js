@@ -1,6 +1,9 @@
 // Lógica para Anime Tracker
 
 document.addEventListener('DOMContentLoaded', () => {
+    const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
+    const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
+
     // --- SELECCIÓN DE ELEMENTOS DEL DOM ---
     const seasonSelector = document.getElementById('season-selector');
     const addSeasonBtn = document.getElementById('add-season-btn');
@@ -24,6 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const endingsList = document.getElementById('endings-list');
     const addEndingBtn = document.getElementById('add-ending-btn');
     const saveAnimeBtn = document.getElementById('save-anime-btn');
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIconSun = document.getElementById('theme-icon-sun');
+    const themeIconMoon = document.getElementById('theme-icon-moon');
 
     let currentSeasonId = null;
     let editingAnimeId = null;
@@ -125,8 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
                             <p><strong>Comentarios:</strong> ${anime.comments || 'N/A'}</p>
                         </div>
                         <div class="anime-actions">
-                            <button class="edit-anime-btn">Editar</button>
-                            <button class="delete-anime-btn">Eliminar</button>
+                            <button class="edit-anime-btn" title="Editar">${pencilIcon}</button>
+                            <button class="delete-anime-btn" title="Eliminar">${trashIcon}</button>
                         </div>
                     `;
                     animeList.appendChild(animeCard);
@@ -192,14 +198,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- LÓGICA DE TEMA ---
+    const updateThemeIcons = (theme) => {
+        themeIconSun.style.display = theme === 'dark' ? 'none' : 'block';
+        themeIconMoon.style.display = theme === 'dark' ? 'block' : 'none';
+    };
+
     // --- INICIALIZACIÓN ---
     const init = () => {
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.body.className = savedTheme === 'dark' ? 'dark-mode' : '';
+        updateThemeIcons(savedTheme);
         renderSeasons();
     };
 
     init(); // Cargar todo al iniciar
 
     // --- MANEJO DE EVENTOS ---
+    themeToggle.addEventListener('click', () => {
+        const isDarkMode = document.body.classList.toggle('dark-mode');
+        const newTheme = isDarkMode ? 'dark' : 'light';
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+    });
 
     // Cambiar de temporada
     seasonSelector.addEventListener('change', (e) => {

@@ -1,0 +1,45 @@
+/* theme.css */
+
+:root {
+    --primary-light: #60a5fa;
+    --primary-main: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
+
+    --secondary-color: #1f2937;
+    --background-color: #f9fafb;
+    --text-color: #111827;
+    --card-bg: #ffffff;
+    --border-color: #e5e7eb;
+    --shadow-color: rgba(0, 0, 0, 0.07);
+    --danger-color: #ef4444;
+    --danger-color-dark: #dc2626;
+
+    --song-item-bg: #f9fafb;
+    --song-item-odd-bg: #f3f4f6;
+    --song-detail-text: #4b5563;
+    --add-entry-btn-bg: #6b7280;
+    --add-entry-btn-hover-bg: #4b5563;
+}
+
+body.dark-mode {
+    --primary-light: #4f46e5;
+    --primary-main: #6366f1;
+    --primary-dark: #818cf8;
+    --primary-gradient: linear-gradient(135deg, #4f46e5, #818cf8);
+
+    --secondary-color: #f9fafb;
+    --background-color: #111827;
+    --text-color: #e5e7eb;
+    --card-bg: #1f2937;
+    --border-color: #374151;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --danger-color: #f87171;
+    --danger-color-dark: #ef4444;
+
+    --song-item-bg: #374151;
+    --song-item-odd-bg: #4b5563;
+    --song-detail-text: #d1d5db;
+    --add-entry-btn-bg: #4b5563;
+    --add-entry-btn-hover-bg: #6b7280;
+}

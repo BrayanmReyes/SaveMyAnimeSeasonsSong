@@ -1,20 +1,6 @@
 /* Estilos para Anime Tracker */
 
-:root {
-    --primary-light: #60a5fa;
-    --primary-main: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
-
-    --secondary-color: #1f2937;
-    --background-color: #f9fafb; /* Lighter gray */
-    --text-color: #111827;
-    --card-bg: #ffffff;
-    --border-color: #e5e7eb; /* Lighter border */
-    --shadow-color: rgba(0, 0, 0, 0.07);
-    --danger-color: #ef4444;
-    --danger-color-dark: #dc2626;
-}
+/* Color variables are in theme.css */
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
@@ -28,8 +14,37 @@ header {
     background: var(--primary-gradient);
     color: white;
     padding: 1rem 2rem;
-    text-align: center;
     box-shadow: 0 2px 4px var(--shadow-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    margin: 0;
+}
+
+#theme-toggle {
+    background: none;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+#theme-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: white;
+}
+
+#theme-toggle svg {
+    stroke: white;
 }
 
 main {
@@ -149,11 +164,11 @@ button:hover {
     padding: 0.5rem;
     border-radius: 4px;
     margin-bottom: 0.5rem;
-    background-color: #f9fafb;
+    background-color: var(--song-item-bg);
 }
 
 .song-item:nth-child(odd) {
-    background-color: #f3f4f6;
+    background-color: var(--song-item-odd-bg);
 }
 
 .song-title {
@@ -170,7 +185,7 @@ button:hover {
 }
 
 .song-details span {
-    color: #4b5563;
+    color: var(--song-detail-text);
 }
 
 .song-details a {
@@ -189,6 +204,29 @@ button:hover {
     margin-top: 1rem;
     justify-content: flex-end;
 }
+
+.anime-actions button {
+    background: none;
+    padding: 0.25rem;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.anime-actions button.edit-anime-btn svg {
+    stroke: #10b981; /* Green */
+}
+.anime-actions button.delete-anime-btn svg {
+    stroke: #ef4444; /* Red */
+}
+
+.anime-actions button:hover {
+    background-color: var(--border-color);
+}
+
 
 /* Floating Action Button */
 .fab {
@@ -313,7 +351,7 @@ legend {
         "url del-btn";
     gap: 0.5rem;
     align-items: center;
-    background-color: #f9fafb;
+    background-color: var(--song-item-bg);
     padding: 0.75rem;
     border-radius: 4px;
 }
@@ -330,16 +368,62 @@ legend {
 }
 
 .add-entry-btn {
-    background-color: #6b7280;
+    background-color: var(--add-entry-btn-bg);
     width: auto;
     display: inline-block;
     padding: 0.5rem 1rem;
 }
 
 .add-entry-btn:hover {
-    background-color: #4b5563;
+    background-color: var(--add-entry-btn-hover-bg);
 }
 
 .delete-entry-btn:hover {
     background-color: var(--danger-color-dark);
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    main {
+        padding: 1rem;
+    }
+
+    header {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    #season-manager {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .anime-day-list {
+        grid-template-columns: 1fr; /* Stack cards vertically */
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 5% auto;
+        padding: 1.5rem;
+    }
+
+    .song-entry {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "jp"
+            "romaji"
+            "url"
+            "del-btn";
+    }
+
+    .song-entry .delete-entry-btn {
+        justify-self: stretch; /* Full width */
+    }
 }
