@@ -92,11 +92,27 @@ document.addEventListener('DOMContentLoaded', () => {
                     animeCard.dataset.animeId = anime.id;
 
                     const openingsHTML = anime.openings && anime.openings.length > 0
-                        ? anime.openings.map(op => `<li>${op.romajiName || op.jpName} ${op.youtubeUrl ? `<a href="${op.youtubeUrl}" target="_blank" title="${op.youtubeUrl}">[YouTube]</a>` : ''}</li>`).join('')
+                        ? anime.openings.map((op, index) => `
+                            <li class="song-item">
+                                <strong class="song-title">OP ${index + 1}:</strong>
+                                <div class="song-details">
+                                    <span><strong>JP:</strong> ${op.jpName || 'N/A'}</span>
+                                    <span><strong>Romaji:</strong> ${op.romajiName || 'N/A'}</span>
+                                    ${op.youtubeUrl ? `<a href="${op.youtubeUrl}" target="_blank" title="${op.youtubeUrl}">YouTube</a>` : ''}
+                                </div>
+                            </li>`).join('')
                         : '<li>N/A</li>';
 
                     const endingsHTML = anime.endings && anime.endings.length > 0
-                        ? anime.endings.map(en => `<li>${en.romajiName || en.jpName} ${en.youtubeUrl ? `<a href="${en.youtubeUrl}" target="_blank" title="${en.youtubeUrl}">[YouTube]</a>` : ''}</li>`).join('')
+                        ? anime.endings.map((en, index) => `
+                            <li class="song-item">
+                                <strong class="song-title">ED ${index + 1}:</strong>
+                                <div class="song-details">
+                                    <span><strong>JP:</strong> ${en.jpName || 'N/A'}</span>
+                                    <span><strong>Romaji:</strong> ${en.romajiName || 'N/A'}</span>
+                                    ${en.youtubeUrl ? `<a href="${en.youtubeUrl}" target="_blank" title="${en.youtubeUrl}">YouTube</a>` : ''}
+                                </div>
+                            </li>`).join('')
                         : '<li>N/A</li>';
 
                     animeCard.innerHTML = `

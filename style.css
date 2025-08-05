@@ -1,14 +1,17 @@
 /* Estilos para Anime Tracker */
 
 :root {
-    --primary-color: #3b82f6;
-    --primary-color-dark: #2563eb;
+    --primary-light: #60a5fa;
+    --primary-main: #3b82f6;
+    --primary-dark: #2563eb;
+    --primary-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
+
     --secondary-color: #1f2937;
-    --background-color: #f3f4f6;
+    --background-color: #f9fafb; /* Lighter gray */
     --text-color: #111827;
     --card-bg: #ffffff;
-    --border-color: #d1d5db;
-    --shadow-color: rgba(0, 0, 0, 0.1);
+    --border-color: #e5e7eb; /* Lighter border */
+    --shadow-color: rgba(0, 0, 0, 0.07);
     --danger-color: #ef4444;
     --danger-color-dark: #dc2626;
 }
@@ -22,9 +25,9 @@ body {
 }
 
 header {
-    background-color: var(--secondary-color);
+    background: var(--primary-gradient);
     color: white;
-    padding: 1rem 2rem;
+    padding: 1.5rem 2rem;
     text-align: center;
     box-shadow: 0 2px 4px var(--shadow-color);
 }
@@ -45,11 +48,13 @@ main {
     margin-bottom: 2rem;
     box-shadow: 0 1px 3px var(--shadow-color);
     flex-wrap: wrap;
+    border-left: 5px solid var(--primary-main);
 }
 
 #season-manager h2 {
     margin: 0;
     font-size: 1.2rem;
+    color: var(--secondary-color);
 }
 
 select, input[type="text"], input[type="url"], textarea, button {
@@ -58,22 +63,25 @@ select, input[type="text"], input[type="url"], textarea, button {
     padding: 0.5rem 1rem;
     border: 1px solid var(--border-color);
     border-radius: 6px;
+    transition: box-shadow 0.2s, border-color 0.2s;
 }
 
-select {
-    min-width: 200px;
+select:focus, input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
 }
 
 button {
     cursor: pointer;
     border: none;
     color: white;
-    background-color: var(--primary-color);
+    background-color: var(--primary-main);
     transition: background-color 0.2s ease;
 }
 
 button:hover {
-    background-color: var(--primary-color-dark);
+    background-color: var(--primary-dark);
 }
 
 #delete-season-btn {
@@ -89,30 +97,38 @@ button:hover {
 }
 
 .day-section h3 {
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--primary-main);
+    color: var(--primary-dark);
     padding-bottom: 0.5rem;
     margin-bottom: 1rem;
 }
 
 .anime-day-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 1.5rem;
 }
 
 .anime-card {
     background-color: var(--card-bg);
     border-radius: 8px;
-    box-shadow: 0 2px 5px var(--shadow-color);
+    box-shadow: 0 4px 6px var(--shadow-color);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.anime-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px var(--shadow-color);
 }
 
 .anime-card h4 {
     margin-top: 0;
     margin-bottom: 1rem;
     font-size: 1.25rem;
+    color: var(--secondary-color);
 }
 
 .anime-details {
@@ -120,18 +136,50 @@ button:hover {
 }
 
 .anime-details ul {
-    padding-left: 20px;
+    padding-left: 0;
+    list-style-type: none;
     margin-top: 0.5rem;
-    word-break: break-word;
 }
 
-.anime-details a {
-    color: var(--primary-color);
+.anime-details p {
+    margin: 1rem 0 0.5rem;
+}
+
+.song-item {
+    padding: 0.5rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+    background-color: #f9fafb;
+}
+
+.song-item:nth-child(odd) {
+    background-color: #f3f4f6;
+}
+
+.song-title {
+    font-weight: bold;
+    color: var(--primary-dark);
+}
+
+.song-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.9rem;
+    padding-left: 1rem;
+}
+
+.song-details span {
+    color: #4b5563;
+}
+
+.song-details a {
+    color: var(--primary-main);
     text-decoration: none;
     font-weight: bold;
 }
 
-.anime-details a:hover {
+.song-details a:hover {
     text-decoration: underline;
 }
 
@@ -150,7 +198,7 @@ button:hover {
     width: 56px;
     height: 56px;
     border-radius: 50%;
-    background-color: var(--primary-color);
+    background: var(--primary-gradient);
     color: white;
     font-size: 2rem;
     display: flex;
@@ -159,12 +207,11 @@ button:hover {
     box-shadow: 0 4px 8px var(--shadow-color);
     border: none;
     cursor: pointer;
-    transition: background-color 0.2s, transform 0.2s;
+    transition: transform 0.2s;
 }
 
 .fab:hover {
-    background-color: var(--primary-color-dark);
-    transform: scale(1.05);
+    transform: scale(1.1);
 }
 
 /* Modal Styles */
@@ -187,7 +234,7 @@ button:hover {
     padding: 2rem;
     border-radius: 8px;
     width: 90%;
-    max-width: 600px; /* Aumentado para más espacio */
+    max-width: 600px;
     position: relative;
     box-shadow: 0 5px 15px var(--shadow-color);
     animation: slideIn 0.3s;
@@ -211,7 +258,7 @@ button:hover {
 }
 
 .modal input, .modal select, .modal textarea {
-    width: calc(100% - 2rem); /* Full width minus padding */
+    width: calc(100% - 2rem);
     margin-bottom: 1rem;
 }
 
@@ -220,8 +267,10 @@ button:hover {
     resize: vertical;
 }
 
-.modal button {
+.modal button#save-anime-btn, .modal button#save-season-btn {
     width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
 }
 
 @keyframes fadeIn {
@@ -245,7 +294,7 @@ fieldset {
 legend {
     padding: 0 0.5rem;
     font-weight: bold;
-    color: var(--primary-color);
+    color: var(--primary-dark);
 }
 
 .dynamic-list {
@@ -264,6 +313,9 @@ legend {
         "url del-btn";
     gap: 0.5rem;
     align-items: center;
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 4px;
 }
 .song-jp-name { grid-area: jp; }
 .song-romaji-name { grid-area: romaji; }
