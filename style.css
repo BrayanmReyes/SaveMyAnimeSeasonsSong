@@ -139,17 +139,16 @@ main {
 .season-actions button svg {
     width: 20px;
     height: 20px;
-    stroke: var(--text-color);
     transition: stroke 0.2s;
 }
 
-#add-season-btn:hover svg {
+#add-season-btn svg {
     stroke: var(--action-add-color);
 }
-#edit-season-btn:hover svg {
+#edit-season-btn svg {
     stroke: var(--action-edit-color);
 }
-#delete-season-btn:hover svg {
+#delete-season-btn svg {
     stroke: var(--action-delete-color);
 }
 
@@ -275,6 +274,13 @@ button:hover {
     text-decoration: underline;
 }
 
+.youtube-link svg {
+    stroke: #ff0000;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
 .anime-actions {
     display: flex;
     gap: 0.5rem;
@@ -382,7 +388,7 @@ legend {
 }
 
 .add-entry-btn {
-    background-color: var(--action-secondary-bg);
+    background-color: var(--action-add-color);
     width: auto;
     display: inline-flex;
     align-items: center;
@@ -390,6 +396,7 @@ legend {
     padding: 0.5rem 1rem;
     color: white;
     border: none;
+    border-radius: 6px; /* Match other buttons */
 }
 
 .add-entry-btn svg {
@@ -399,7 +406,7 @@ legend {
 }
 
 .add-entry-btn:hover {
-    background-color: var(--action-secondary-hover-bg);
+    opacity: 0.9;
 }
 
 .delete-entry-btn:hover {

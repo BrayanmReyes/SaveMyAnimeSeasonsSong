@@ -1,5 +1,6 @@
 export const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
 export const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
+export const youtubeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>`;
 
 export const DOM = {
     seasonSelector: document.getElementById('season-selector'),
@@ -64,10 +65,10 @@ export const renderAnimes = (animes) => {
                 animeCard.className = 'anime-card';
                 animeCard.dataset.animeId = anime.id;
                 const openingsHTML = anime.openings && anime.openings.length > 0
-                    ? anime.openings.map((op, index) => `<li class="song-item"><strong class="song-title">OP ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${op.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${op.romaji_name || 'N/A'}</span>${op.youtube_url ? `<a href="${op.youtube_url}" target="_blank" title="${op.youtube_url}">YouTube</a>` : ''}</div></li>`).join('')
+                    ? anime.openings.map((op, index) => `<li class="song-item"><strong class="song-title">OP ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${op.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${op.romaji_name || 'N/A'}</span>${op.youtube_url ? `<a href="${op.youtube_url}" target="_blank" title="${op.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
                     : '<li>N/A</li>';
                 const endingsHTML = anime.endings && anime.endings.length > 0
-                    ? anime.endings.map((en, index) => `<li class="song-item"><strong class="song-title">ED ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${en.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${en.romaji_name || 'N/A'}</span>${en.youtube_url ? `<a href="${en.youtube_url}" target="_blank" title="${en.youtube_url}">YouTube</a>` : ''}</div></li>`).join('')
+                    ? anime.endings.map((en, index) => `<li class="song-item"><strong class="song-title">ED ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${en.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${en.romaji_name || 'N/A'}</span>${en.youtube_url ? `<a href="${en.youtube_url}" target="_blank" title="${en.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
                     : '<li>N/A</li>';
                 animeCard.innerHTML = `
                     <div class="anime-card-header">
