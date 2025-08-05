@@ -53,10 +53,19 @@
     resize: vertical;
 }
 
-.modal button#save-anime-btn, .modal button#save-season-btn {
+.modal button#save-anime-btn,
+.modal button#save-season-btn,
+#login-modal button {
     width: 100%;
     padding: 0.75rem;
     font-size: 1.1rem;
+    background-color: var(--action-primary-bg);
+}
+
+.modal button#save-anime-btn:hover,
+.modal button#save-season-btn:hover,
+#login-modal button:hover {
+    background-color: var(--action-primary-hover-bg);
 }
 
 @keyframes fadeIn {

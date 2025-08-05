@@ -20,26 +20,31 @@
     --song-detail-text: #4b5563;
     --add-entry-btn-bg: #6b7280;
     --add-entry-btn-hover-bg: #4b5563;
+    --action-primary-bg: var(--primary-main);
+    --action-primary-hover-bg: var(--primary-dark);
 }
 
 body.dark-mode {
     --primary-light: #4f46e5;
     --primary-main: #6366f1;
     --primary-dark: #818cf8;
-    --primary-gradient: linear-gradient(135deg, #4f46e5, #818cf8);
+    --primary-gradient: linear-gradient(135deg, #4338ca, #6366f1);
 
-    --secondary-color: #f9fafb;
-    --background-color: #111827;
-    --text-color: #e5e7eb;
-    --card-bg: #1f2937;
-    --border-color: #374151;
-    --shadow-color: rgba(0, 0, 0, 0.3);
+    --secondary-color: #e5e7eb; /* Lighter text for titles */
+    --background-color: #0f172a; /* Deeper blue-gray */
+    --text-color: #cbd5e1;       /* Softer white */
+    --card-bg: #1e293b;          /* Slightly lighter card bg */
+    --border-color: #334155;     /* More visible border */
+    --shadow-color: rgba(0, 0, 0, 0.5);
     --danger-color: #f87171;
     --danger-color-dark: #ef4444;
 
-    --song-item-bg: #374151;
-    --song-item-odd-bg: #4b5563;
-    --song-detail-text: #d1d5db;
-    --add-entry-btn-bg: #4b5563;
-    --add-entry-btn-hover-bg: #6b7280;
+    --song-item-bg: #334155;
+    --song-item-odd-bg: #475569;
+    --song-detail-text: #94a3b8;
+
+    --action-primary-bg: var(--primary-main);
+    --action-primary-hover-bg: var(--primary-light);
+    --action-secondary-bg: #475569;
+    --add-entry-btn-hover-bg: #64748b;
 }
