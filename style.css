@@ -391,6 +391,59 @@ legend {
     }
 }
 
+/* Accordion Styles */
+.anime-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1rem;
+}
+
+.anime-card.expanded .anime-card-header {
+    margin-bottom: 1rem;
+}
+
+.accordion-icon {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    transition: transform 0.3s ease;
+}
+
+.accordion-icon::before,
+.accordion-icon::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--text-color);
+    border-radius: 1px;
+    transition: transform 0.3s ease;
+}
+
+.accordion-icon::after {
+    transform: translateY(-50%) rotate(90deg);
+}
+.accordion-icon::before {
+    transform: translateY(-50%);
+}
+
+.anime-card.expanded .accordion-icon::after {
+    transform: translateY(-50%) rotate(0deg);
+}
+
+.anime-details {
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.4s ease-out;
+}
+
+
 /* Read-Only Mode Styles */
 .readonly-mode #season-manager #add-season-btn,
 .readonly-mode #season-manager #delete-season-btn,
