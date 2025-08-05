@@ -38,6 +38,15 @@ export const addSeason = async (name) => {
     return true;
 };
 
+export const updateSeason = async (id, name) => {
+    const { error } = await _supabase.from('seasons').update({ name }).eq('id', id);
+    if (error) {
+        console.error('Error updating season:', error);
+        return false;
+    }
+    return true;
+};
+
 export const deleteSeason = async (id) => {
     const { error } = await _supabase.from('seasons').delete().eq('id', id);
     if (error) {

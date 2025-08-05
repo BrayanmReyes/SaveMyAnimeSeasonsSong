@@ -4,6 +4,7 @@ import * as ui from './ui.js';
 const state = {
     currentSeasonId: null,
     editingAnimeId: null,
+    editingSeasonId: null,
 };
 
 const ADMIN_PASSWORD = 'admin'; // NOTA: Esto es inseguro. En una app real, usar variables de entorno.
@@ -63,24 +64,48 @@ function setupEventListeners() {
         btn.addEventListener('click', (e) => {
             const modal = e.target.closest('.modal');
             ui.closeModal(modal);
-            if(modal === ui.DOM.addAnimeModal) {
+            if (modal === ui.DOM.addAnimeModal) {
                 state.editingAnimeId = null;
                 // Reset form
             }
+            if (modal === ui.DOM.addSeasonModal) {
+                state.editingSeasonId = null;
+                ui.DOM.addSeasonModal.querySelector('h2').textContent = 'Nueva Temporada';
+                ui.DOM.seasonNameInput.value = '';
+            }
         });
+    });
+
+    ui.DOM.editSeasonBtn.addEventListener('click', () => {
+        if (!state.currentSeasonId) return alert('No hay ninguna temporada seleccionada para editar.');
+
+        state.editingSeasonId = state.currentSeasonId;
+        const seasonName = ui.DOM.seasonSelector.options[ui.DOM.seasonSelector.selectedIndex].text;
+
+        ui.DOM.addSeasonModal.querySelector('h2').textContent = 'Editar Temporada';
+        ui.DOM.seasonNameInput.value = seasonName;
+        ui.openModal(ui.DOM.addSeasonModal);
     });
 
     ui.DOM.saveSeasonBtn.addEventListener('click', async () => {
         const name = ui.DOM.seasonNameInput.value.trim();
         if (name) {
-            const success = await api.addSeason(name);
+            let success;
+            if (state.editingSeasonId) {
+                success = await api.updateSeason(state.editingSeasonId, name);
+            } else {
+                success = await api.addSeason(name);
+            }
+
             if (success) {
                 ui.DOM.seasonNameInput.value = '';
                 ui.closeModal(ui.DOM.addSeasonModal);
                 await handleInitialLoad(); // Reload everything
             } else {
-                alert('No se pudo crear la temporada.');
+                alert(`No se pudo ${state.editingSeasonId ? 'actualizar' : 'crear'} la temporada.`);
             }
+            state.editingSeasonId = null; // Reset
+            ui.DOM.addSeasonModal.querySelector('h2').textContent = 'Nueva Temporada';
         }
     });
 

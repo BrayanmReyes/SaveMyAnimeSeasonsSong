@@ -4,6 +4,7 @@ export const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" hei
 export const DOM = {
     seasonSelector: document.getElementById('season-selector'),
     addSeasonBtn: document.getElementById('add-season-btn'),
+    editSeasonBtn: document.getElementById('edit-season-btn'),
     deleteSeasonBtn: document.getElementById('delete-season-btn'),
     animeListContainer: document.getElementById('anime-list-container'),
     addAnimeBtn: document.getElementById('add-anime-btn'),
@@ -73,7 +74,7 @@ export const renderAnimes = (animes) => {
                         <h4>${anime.name}</h4>
                         <span class="accordion-icon"></span>
                     </div>
-                    <div class="anime-details" style="display: none;">
+                    <div class="anime-details">
                         <p><strong>Openings:</strong></p>
                         <ul>${openingsHTML}</ul>
                         <p><strong>Endings:</strong></p>
