@@ -52,8 +52,16 @@
                 <option value="Domingo">Domingo</option>
                 <option value="Especial">Especial (OVA, Película, etc.)</option>
             </select>
-            <textarea id="openings-input" placeholder="Openings (uno por línea)"></textarea>
-            <textarea id="endings-input" placeholder="Endings (uno por línea)"></textarea>
+            <fieldset>
+                <legend>Openings</legend>
+                <div id="openings-list" class="dynamic-list"></div>
+                <button type="button" id="add-opening-btn" class="add-entry-btn">Agregar Opening</button>
+            </fieldset>
+            <fieldset>
+                <legend>Endings</legend>
+                <div id="endings-list" class="dynamic-list"></div>
+                <button type="button" id="add-ending-btn" class="add-entry-btn">Agregar Ending</button>
+            </fieldset>
             <textarea id="comments-input" placeholder="Comentarios"></textarea>
             <button id="save-anime-btn">Guardar</button>
         </div>

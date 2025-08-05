@@ -18,9 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const saveSeasonBtn = document.getElementById('save-season-btn');
     const animeNameInput = document.getElementById('anime-name-input');
     const dayOfWeekInput = document.getElementById('day-of-week-input');
-    const openingsInput = document.getElementById('openings-input');
-    const endingsInput = document.getElementById('endings-input');
     const commentsInput = document.getElementById('comments-input');
+    const openingsList = document.getElementById('openings-list');
+    const addOpeningBtn = document.getElementById('add-opening-btn');
+    const endingsList = document.getElementById('endings-list');
+    const addEndingBtn = document.getElementById('add-ending-btn');
     const saveAnimeBtn = document.getElementById('save-anime-btn');
 
     let currentSeasonId = null;
@@ -42,6 +44,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const saveAppData = (data) => {
         localStorage.setItem('animeTrackerData', JSON.stringify(data));
+    };
+
+    // --- LÓGICA DE FORMULARIO DINÁMICO ---
+    const createSongEntryForm = (song = {}) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.className = 'song-entry';
+        entryDiv.innerHTML = `
+            <input type="text" class="song-jp-name" placeholder="Nombre en Japonés" value="${song.jpName || ''}">
+            <input type="text" class="song-romaji-name" placeholder="Nombre en Romanji" value="${song.romajiName || ''}">
+            <input type="url" class="song-youtube-url" placeholder="URL de YouTube" value="${song.youtubeUrl || ''}">
+            <button type="button" class="delete-entry-btn">Eliminar</button>
+        `;
+        entryDiv.querySelector('.delete-entry-btn').addEventListener('click', () => {
+            entryDiv.remove();
+        });
+        return entryDiv;
     };
 
     // --- RENDERIZADO ---
@@ -72,13 +90,22 @@ document.addEventListener('DOMContentLoaded', () => {
                     const animeCard = document.createElement('div');
                     animeCard.className = 'anime-card';
                     animeCard.dataset.animeId = anime.id;
+
+                    const openingsHTML = anime.openings && anime.openings.length > 0
+                        ? anime.openings.map(op => `<li>${op.romajiName || op.jpName} ${op.youtubeUrl ? `<a href="${op.youtubeUrl}" target="_blank" title="${op.youtubeUrl}">[YouTube]</a>` : ''}</li>`).join('')
+                        : '<li>N/A</li>';
+
+                    const endingsHTML = anime.endings && anime.endings.length > 0
+                        ? anime.endings.map(en => `<li>${en.romajiName || en.jpName} ${en.youtubeUrl ? `<a href="${en.youtubeUrl}" target="_blank" title="${en.youtubeUrl}">[YouTube]</a>` : ''}</li>`).join('')
+                        : '<li>N/A</li>';
+
                     animeCard.innerHTML = `
                         <h4>${anime.name}</h4>
                         <div class="anime-details">
                             <p><strong>Openings:</strong></p>
-                            <ul>${anime.openings.map(op => `<li>${op}</li>`).join('') || '<li>N/A</li>'}</ul>
+                            <ul>${openingsHTML}</ul>
                             <p><strong>Endings:</strong></p>
-                            <ul>${anime.endings.map(en => `<li>${en}</li>`).join('') || '<li>N/A</li>'}</ul>
+                            <ul>${endingsHTML}</ul>
                             <p><strong>Comentarios:</strong> ${anime.comments || 'N/A'}</p>
                         </div>
                         <div class="anime-actions">
@@ -143,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
             addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
             animeNameInput.value = '';
             dayOfWeekInput.value = 'Lunes';
-            openingsInput.value = '';
-            endingsInput.value = '';
+            openingsList.innerHTML = '';
+            endingsList.innerHTML = '';
             commentsInput.value = '';
         }
     };
@@ -190,6 +217,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    addOpeningBtn.addEventListener('click', () => {
+        openingsList.appendChild(createSongEntryForm());
+    });
+
+    addEndingBtn.addEventListener('click', () => {
+        endingsList.appendChild(createSongEntryForm());
+    });
+
     // Guardar temporada
     saveSeasonBtn.addEventListener('click', () => {
         const name = seasonNameInput.value.trim();
@@ -231,14 +266,24 @@ document.addEventListener('DOMContentLoaded', () => {
     saveAnimeBtn.addEventListener('click', () => {
         const name = animeNameInput.value.trim();
         const day = dayOfWeekInput.value;
-        const openings = openingsInput.value.split('\n').filter(op => op.trim() !== '');
-        const endings = endingsInput.value.split('\n').filter(en => en.trim() !== '');
         const comments = commentsInput.value.trim();
 
         if (!name) {
             alert('El nombre del anime no puede estar vacío.');
             return;
         }
+
+        const openings = Array.from(openingsList.querySelectorAll('.song-entry')).map(entry => ({
+            jpName: entry.querySelector('.song-jp-name').value.trim(),
+            romajiName: entry.querySelector('.song-romaji-name').value.trim(),
+            youtubeUrl: entry.querySelector('.song-youtube-url').value.trim(),
+        })).filter(s => s.jpName || s.romajiName || s.youtubeUrl);
+
+        const endings = Array.from(endingsList.querySelectorAll('.song-entry')).map(entry => ({
+            jpName: entry.querySelector('.song-jp-name').value.trim(),
+            romajiName: entry.querySelector('.song-romaji-name').value.trim(),
+            youtubeUrl: entry.querySelector('.song-youtube-url').value.trim(),
+        })).filter(s => s.jpName || s.romajiName || s.youtubeUrl);
 
         const data = getAppData();
         const season = data.seasons.find(s => s.id === currentSeasonId);
@@ -293,8 +338,17 @@ document.addEventListener('DOMContentLoaded', () => {
             addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
             animeNameInput.value = anime.name;
             dayOfWeekInput.value = anime.day_of_week;
-            openingsInput.value = anime.openings.join('\n');
-            endingsInput.value = anime.endings.join('\n');
+
+            openingsList.innerHTML = ''; // Limpiar
+            if(anime.openings) {
+                anime.openings.forEach(op => openingsList.appendChild(createSongEntryForm(op)));
+            }
+
+            endingsList.innerHTML = ''; // Limpiar
+            if(anime.endings) {
+                anime.endings.forEach(en => endingsList.appendChild(createSongEntryForm(en)));
+            }
+
             commentsInput.value = anime.comments;
 
             openModal(addAnimeModal);
