@@ -33,6 +33,7 @@ export const DOM = {
     videoModal: document.getElementById('video-modal'),
     youtubeIframe: document.getElementById('youtube-iframe'),
     openInYtLink: document.getElementById('open-in-yt-link'),
+    scrollToTopBtn: document.getElementById('scroll-to-top-btn'),
 };
 
 export const createSongEntryForm = (song = {}) => {

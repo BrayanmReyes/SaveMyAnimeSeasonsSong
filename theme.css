@@ -52,6 +52,7 @@ body.dark-mode {
     --action-delete-color: #f87171;
 }
 
-body.dark-mode select, body.dark-mode .modal select {
+body.dark-mode select {
     color: var(--text-color);
+    background-color: var(--card-bg);
 }

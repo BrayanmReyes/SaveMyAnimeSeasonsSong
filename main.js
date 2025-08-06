@@ -258,6 +258,21 @@ function setupEventListeners() {
         localStorage.setItem('theme', newTheme);
         ui.updateThemeIcons(newTheme);
     });
+
+    // Scroll to top logic
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            ui.DOM.scrollToTopBtn.style.display = 'flex';
+            // Use a timeout to allow the display property to apply before adding the class
+            setTimeout(() => ui.DOM.scrollToTopBtn.classList.add('visible'), 10);
+        } else {
+            ui.DOM.scrollToTopBtn.classList.remove('visible');
+        }
+    });
+
+    ui.DOM.scrollToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

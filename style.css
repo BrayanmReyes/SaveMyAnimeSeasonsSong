@@ -354,6 +354,26 @@ button:hover {
     transform: scale(1.1);
 }
 
+.fab-secondary {
+    left: 2rem;
+    background: var(--action-secondary-bg);
+}
+
+.fab-secondary:hover {
+    background: var(--action-secondary-hover-bg);
+}
+
+#scroll-to-top-btn {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s;
+}
+
+#scroll-to-top-btn.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
 /* Modal styles are in modals.css */
 
 /* Estilos para el formulario dinámico de canciones */
