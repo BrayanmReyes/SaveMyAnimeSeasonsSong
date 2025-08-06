@@ -32,6 +32,7 @@ export const DOM = {
     loginSubmitBtn: document.getElementById('login-submit-btn'),
     videoModal: document.getElementById('video-modal'),
     youtubeIframe: document.getElementById('youtube-iframe'),
+    openInYtLink: document.getElementById('open-in-yt-link'),
 };
 
 export const createSongEntryForm = (song = {}) => {
@@ -130,6 +131,7 @@ export const openVideoModal = (url) => {
     const videoId = videoIdMatch[1];
     const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
     DOM.youtubeIframe.src = embedUrl;
+    DOM.openInYtLink.href = `https://www.youtube.com/watch?v=${videoId}`;
     openModal(DOM.videoModal);
 };
 

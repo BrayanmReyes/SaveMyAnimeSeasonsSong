@@ -146,3 +146,22 @@
 .video-modal-content .close-btn:hover {
     opacity: 1;
 }
+
+.video-modal-action {
+    position: absolute;
+    top: -35px;
+    right: 50px;
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.video-modal-action:hover {
+    opacity: 1;
+}
+
+.video-modal-action svg {
+    stroke: white;
+    width: 28px;
+    height: 28px;
+}
