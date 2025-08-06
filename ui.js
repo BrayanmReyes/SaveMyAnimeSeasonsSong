@@ -140,6 +140,15 @@ export const closeModal = (modal) => {
     if (modal === DOM.videoModal) {
         DOM.youtubeIframe.src = ''; // Stop video playback
     }
+    // Also reset anime form on close
+    if (modal === DOM.addAnimeModal) {
+        DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
+        DOM.animeNameInput.value = '';
+        DOM.dayOfWeekInput.value = 'Lunes';
+        DOM.commentsInput.value = '';
+        DOM.openingsList.innerHTML = '';
+        DOM.endingsList.innerHTML = '';
+    }
 };
 
 export const updateThemeIcons = (theme) => {
