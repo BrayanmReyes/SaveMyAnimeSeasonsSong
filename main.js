@@ -5,6 +5,7 @@ const state = {
     currentSeasonId: null,
     editingAnimeId: null,
     editingSeasonId: null,
+    isContinuationMode: false,
 };
 
 const ADMIN_PASSWORD = 'admin'; // NOTA: Esto es inseguro. En una app real, usar variables de entorno.
@@ -52,21 +53,61 @@ function setupEventListeners() {
     });
 
     ui.DOM.addSeasonBtn.addEventListener('click', () => ui.openModal(ui.DOM.addSeasonModal));
+
+    const prepareNewAnimeModal = () => {
+        state.isContinuationMode = false;
+        state.editingAnimeId = null;
+        ui.DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
+        ui.DOM.continuationSection.style.display = 'none';
+        ui.DOM.newAnimeSection.style.display = 'block';
+        ui.DOM.openingsList.parentElement.style.display = 'block';
+        ui.DOM.endingsList.parentElement.style.display = 'block';
+        ui.DOM.commentsInput.style.display = 'block';
+    };
+
     ui.DOM.addAnimeBtn.addEventListener('click', () => {
-        if (state.currentSeasonId) {
-            ui.openModal(ui.DOM.addAnimeModal);
-        } else {
-            alert('Por favor, crea y selecciona una temporada primero.');
+        if (!state.currentSeasonId) return alert('Por favor, crea y selecciona una temporada primero.');
+        prepareNewAnimeModal();
+        ui.openModal(ui.DOM.addAnimeModal);
+    });
+
+    ui.DOM.addContinuationBtn.addEventListener('click', async () => {
+        if (!state.currentSeasonId) return alert('Por favor, selecciona una temporada primero.');
+
+        state.isContinuationMode = true;
+        const animes = await api.getContinuableAnimes();
+
+        if (animes.length === 0) {
+            return alert('No hay animes en temporadas anteriores para continuar.');
         }
+
+        ui.DOM.addAnimeModal.querySelector('h2').textContent = 'Añadir Continuación';
+        ui.DOM.continuationSection.style.display = 'block';
+        ui.DOM.newAnimeSection.style.display = 'none';
+        ui.DOM.openingsList.parentElement.style.display = 'none';
+        ui.DOM.endingsList.parentElement.style.display = 'none';
+        ui.DOM.commentsInput.style.display = 'none';
+
+        const select = ui.DOM.continuationSelect;
+        select.innerHTML = '<option value="">Selecciona un anime...</option>';
+        animes.forEach(anime => {
+            const option = document.createElement('option');
+            option.value = anime.id;
+            option.textContent = anime.name;
+            select.appendChild(option);
+        });
+
+        ui.openModal(ui.DOM.addAnimeModal);
     });
 
     ui.DOM.closeBtns.forEach(btn => {
         btn.addEventListener('click', (e) => {
             const modal = e.target.closest('.modal');
             ui.closeModal(modal);
+            // Reset state on any modal close
             if (modal === ui.DOM.addAnimeModal) {
                 state.editingAnimeId = null;
-                // Reset form
+                state.isContinuationMode = false;
             }
             if (modal === ui.DOM.addSeasonModal) {
                 state.editingSeasonId = null;
@@ -131,33 +172,50 @@ function setupEventListeners() {
     });
 
     ui.DOM.saveAnimeBtn.addEventListener('click', async () => {
-        const name = ui.DOM.animeNameInput.value.trim();
-        if (!name) return alert('El nombre del anime no puede estar vacío.');
-
-        const animeData = {
-            name: name,
-            day_of_week: ui.DOM.dayOfWeekInput.value,
-            comments: ui.DOM.commentsInput.value.trim(),
-            season_id: state.currentSeasonId
-        };
-
-        const openings = Array.from(ui.DOM.openingsList.querySelectorAll('.song-entry')).map(entry => ({
-            jp_name: entry.querySelector('.song-jp-name').value.trim(),
-            romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
-            youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
-        })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
-
-        const endings = Array.from(ui.DOM.endingsList.querySelectorAll('.song-entry')).map(entry => ({
-            jp_name: entry.querySelector('.song-jp-name').value.trim(),
-            romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
-            youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
-        })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
-
         let success;
-        if (state.editingAnimeId) {
-            success = await api.updateAnime(state.editingAnimeId, animeData, openings, endings);
+        if (state.isContinuationMode) {
+            const select = ui.DOM.continuationSelect;
+            const main_anime_id = parseInt(select.value);
+            if (!main_anime_id) return alert('Por favor, selecciona un anime para continuar.');
+
+            const selectedOption = select.options[select.selectedIndex];
+            const animeData = {
+                name: selectedOption.textContent, // Inherit name from main anime
+                day_of_week: ui.DOM.dayOfWeekInput.value,
+                comments: '', // Comments are on the main entry
+                season_id: state.currentSeasonId,
+                main_anime_id: main_anime_id,
+            };
+            success = await api.addAnime(animeData, [], []); // No songs for continuations
         } else {
-            success = await api.addAnime(animeData, openings, endings);
+            // This is the original logic for adding a new anime or editing an existing one
+            const name = ui.DOM.animeNameInput.value.trim();
+            if (!name) return alert('El nombre del anime no puede estar vacío.');
+
+            const animeData = {
+                name: name,
+                day_of_week: ui.DOM.dayOfWeekInput.value,
+                comments: ui.DOM.commentsInput.value.trim(),
+                season_id: state.currentSeasonId
+            };
+
+            const openings = Array.from(ui.DOM.openingsList.querySelectorAll('.song-entry')).map(entry => ({
+                jp_name: entry.querySelector('.song-jp-name').value.trim(),
+                romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
+                youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
+            })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
+
+            const endings = Array.from(ui.DOM.endingsList.querySelectorAll('.song-entry')).map(entry => ({
+                jp_name: entry.querySelector('.song-jp-name').value.trim(),
+                romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
+                youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
+            })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
+
+            if (state.editingAnimeId) {
+                success = await api.updateAnime(state.editingAnimeId, animeData, openings, endings);
+            } else {
+                success = await api.addAnime(animeData, openings, endings);
+            }
         }
 
         if (success) {
@@ -165,6 +223,7 @@ function setupEventListeners() {
             ui.renderAnimes(animes);
             ui.closeModal(ui.DOM.addAnimeModal);
             state.editingAnimeId = null; // Reset editing state
+            state.isContinuationMode = false; // Reset continuation mode
         } else {
             alert(`No se pudo ${state.editingAnimeId ? 'actualizar' : 'guardar'} el anime.`);
         }
@@ -218,11 +277,25 @@ function setupEventListeners() {
         } else if (e.target.classList.contains('edit-anime-btn')) {
             const anime = await api.getAnimeDetails(animeId);
             if (anime) {
+                prepareNewAnimeModal(); // Reset modal to its default state
                 state.editingAnimeId = anime.id;
+
                 ui.DOM.addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
                 ui.DOM.animeNameInput.value = anime.name;
                 ui.DOM.dayOfWeekInput.value = anime.day_of_week;
-                ui.DOM.commentsInput.value = anime.comments;
+                ui.DOM.commentsInput.value = anime.comments || '';
+
+                // Handle readonly fields for continuations
+                const isContinuation = !!anime.main_anime_id;
+                ui.DOM.animeNameInput.readOnly = isContinuation;
+                ui.DOM.commentsInput.readOnly = isContinuation;
+                if(isContinuation) {
+                    ui.DOM.animeNameInput.title = 'El nombre se hereda del anime original y no se puede cambiar aquí.';
+                    ui.DOM.commentsInput.title = 'Los comentarios se heredan del anime original y no se pueden cambiar aquí.';
+                } else {
+                    ui.DOM.animeNameInput.title = '';
+                    ui.DOM.commentsInput.title = '';
+                }
 
                 ui.DOM.openingsList.innerHTML = '';
                 if(anime.openings) {
