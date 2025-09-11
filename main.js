@@ -369,6 +369,36 @@ function setupEventListeners() {
 
     ui.DOM.artistsBtn.addEventListener('click', showArtistsView);
     ui.DOM.mainTitle.addEventListener('click', showSeasonsView);
+
+    // --- Anime Search ---
+    let searchTimeout;
+    const loadCurrentSeasonAnimes = async () => {
+        if (state.currentSeasonId) {
+            const animes = await api.getAnimesBySeason(state.currentSeasonId);
+            ui.renderAnimes(animes);
+        } else {
+            ui.DOM.animeListContainer.innerHTML = '<p>Crea una temporada para empezar.</p>';
+        }
+    };
+
+    ui.DOM.animeSearchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        const searchTerm = e.target.value.trim();
+
+        if (searchTerm.length === 0) {
+            loadCurrentSeasonAnimes();
+            return;
+        }
+
+        if (searchTerm.length < 3) {
+            return; // Don't search for very short strings
+        }
+
+        searchTimeout = setTimeout(async () => {
+            const results = await api.searchAnimes(searchTerm);
+            ui.renderAnimes(results, { title: `Resultados para "${searchTerm}"`, groupByDay: false });
+        }, 300);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', () => {

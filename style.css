@@ -23,6 +23,29 @@ header {
 header h1 {
     margin: 0;
     font-size: 1.75rem;
+    cursor: pointer;
+}
+
+.header-main {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    flex-grow: 1;
+}
+
+#anime-search-input {
+    background-color: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    color: white;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    max-width: 400px;
+    width: 100%;
+}
+
+#anime-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .header-actions {
@@ -550,4 +573,27 @@ legend {
 .readonly-mode #add-anime-btn,
 .readonly-mode .anime-actions {
     display: none !important;
+}
+
+/* Artist View Styles */
+.artist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.artist-button {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    text-align: center;
+    font-weight: 500;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.artist-button:hover {
+    background-color: var(--background-color);
+    transform: translateY(-2px);
+    border-color: var(--primary-main);
 }
