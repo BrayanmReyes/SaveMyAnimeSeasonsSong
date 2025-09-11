@@ -4,12 +4,16 @@ export const youtubeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" h
 export const linkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="continuation-icon"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>`;
 
 export const DOM = {
+    mainTitle: document.querySelector('header h1'),
     seasonSelector: document.getElementById('season-selector'),
+    seasonManager: document.getElementById('season-manager'),
     addSeasonBtn: document.getElementById('add-season-btn'),
     addContinuationBtn: document.getElementById('add-continuation-btn'),
     editSeasonBtn: document.getElementById('edit-season-btn'),
     deleteSeasonBtn: document.getElementById('delete-season-btn'),
     animeListContainer: document.getElementById('anime-list-container'),
+    artistViewContainer: document.getElementById('artist-view-container'),
+    artistsBtn: document.getElementById('artists-btn'),
     addAnimeBtn: document.getElementById('add-anime-btn'),
     addSeasonModal: document.getElementById('add-season-modal'),
     addAnimeModal: document.getElementById('add-anime-modal'),
