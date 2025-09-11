@@ -121,6 +121,32 @@ export const addSeason = async (name) => {
     return true;
 };
 
+export const getSongsByArtist = async (artistName) => {
+    const { data, error } = await _supabase.rpc('get_songs_by_artist', { p_artist_name: artistName });
+    if (error) {
+        console.error(`Error fetching songs for artist ${artistName}:`, error);
+        return [];
+    }
+    return data || [];
+};
+
+export const searchAnimes = async (searchTerm) => {
+    if (!searchTerm) return [];
+
+    const { data, error } = await _supabase
+        .from('animes')
+        .select('*, openings(*), endings(*)')
+        .is('main_anime_id', null) // Only search against main entries to avoid duplicates
+        .ilike('name', `%${searchTerm}%`);
+
+    if (error) {
+        console.error('Error searching animes:', error);
+        return [];
+    }
+
+    return data || [];
+};
+
 export const getAllArtists = async () => {
     const { data, error } = await _supabase.rpc('get_all_artists');
     if (error) {

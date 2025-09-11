@@ -14,6 +14,7 @@ export const DOM = {
     animeListContainer: document.getElementById('anime-list-container'),
     artistViewContainer: document.getElementById('artist-view-container'),
     artistsBtn: document.getElementById('artists-btn'),
+    animeSearchInput: document.getElementById('anime-search-input'),
     addAnimeBtn: document.getElementById('add-anime-btn'),
     addSeasonModal: document.getElementById('add-season-modal'),
     addAnimeModal: document.getElementById('add-anime-modal'),
@@ -60,55 +61,79 @@ export const createSongEntryForm = (song = {}) => {
     return entryDiv;
 };
 
-export const renderAnimes = (animes) => {
+const createAnimeCard = (anime) => {
+    const animeCard = document.createElement('div');
+    animeCard.className = 'anime-card';
+    animeCard.dataset.animeId = anime.id;
+    const openingsHTML = anime.openings && anime.openings.length > 0
+        ? anime.openings.map((op, index) => `<li class="song-item"><strong class="song-title">OP ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${op.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${op.romaji_name || 'N/A'}</span>${op.youtube_url ? `<a href="${op.youtube_url}" target="_blank" title="${op.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
+        : '<li>N/A</li>';
+    const endingsHTML = anime.endings && anime.endings.length > 0
+        ? anime.endings.map((en, index) => `<li class="song-item"><strong class="song-title">ED ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${en.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${en.romaji_name || 'N/A'}</span>${en.youtube_url ? `<a href="${en.youtube_url}" target="_blank" title="${en.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
+        : '<li>N/A</li>';
+    const continuationIcon = anime.main_anime_id ? linkIcon : '';
+    animeCard.innerHTML = `
+        <div class="anime-card-header">
+            <h4>${continuationIcon}${anime.name}</h4>
+            <span class="accordion-icon"></span>
+        </div>
+        <div class="anime-details">
+            <p><strong>Openings:</strong></p>
+            <ul>${openingsHTML}</ul>
+            <p><strong>Endings:</strong></p>
+            <ul>${endingsHTML}</ul>
+            <p><strong>Comentarios:</strong> ${anime.comments || 'N/A'}</p>
+            <div class="anime-actions">
+                <button class="edit-anime-btn" title="Editar">${pencilIcon}</button>
+                <button class="delete-anime-btn" title="Eliminar">${trashIcon}</button>
+            </div>
+        </div>
+    `;
+    return animeCard;
+};
+
+export const renderAnimes = (animes, options = {}) => {
+    const { title = null, groupByDay = true } = options;
     DOM.animeListContainer.innerHTML = '';
-    const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo', 'Especial'];
-    let animesFound = false;
-    days.forEach(day => {
-        const animesOfTheDay = animes.filter(a => a.day_of_week === day);
-        if (animesOfTheDay.length > 0) {
-            animesFound = true;
-            const daySection = document.createElement('section');
-            daySection.className = 'day-section';
-            daySection.innerHTML = `<h3>${day}</h3>`;
-            const animeList = document.createElement('div');
-            animeList.className = 'anime-day-list';
-            animesOfTheDay.forEach(anime => {
-                const animeCard = document.createElement('div');
-                animeCard.className = 'anime-card';
-                animeCard.dataset.animeId = anime.id;
-                const openingsHTML = anime.openings && anime.openings.length > 0
-                    ? anime.openings.map((op, index) => `<li class="song-item"><strong class="song-title">OP ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${op.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${op.romaji_name || 'N/A'}</span>${op.youtube_url ? `<a href="${op.youtube_url}" target="_blank" title="${op.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
-                    : '<li>N/A</li>';
-                const endingsHTML = anime.endings && anime.endings.length > 0
-                    ? anime.endings.map((en, index) => `<li class="song-item"><strong class="song-title">ED ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${en.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${en.romaji_name || 'N/A'}</span>${en.youtube_url ? `<a href="${en.youtube_url}" target="_blank" title="${en.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
-                    : '<li>N/A</li>';
-                const continuationIcon = anime.main_anime_id ? linkIcon : '';
-                animeCard.innerHTML = `
-                    <div class="anime-card-header">
-                        <h4>${continuationIcon}${anime.name}</h4>
-                        <span class="accordion-icon"></span>
-                    </div>
-                    <div class="anime-details">
-                        <p><strong>Openings:</strong></p>
-                        <ul>${openingsHTML}</ul>
-                        <p><strong>Endings:</strong></p>
-                        <ul>${endingsHTML}</ul>
-                        <p><strong>Comentarios:</strong> ${anime.comments || 'N/A'}</p>
-                        <div class="anime-actions">
-                            <button class="edit-anime-btn" title="Editar">${pencilIcon}</button>
-                            <button class="delete-anime-btn" title="Eliminar">${trashIcon}</button>
-                        </div>
-                    </div>
-                `;
-                animeList.appendChild(animeCard);
-            });
-            daySection.appendChild(animeList);
-            DOM.animeListContainer.appendChild(daySection);
+
+    if (title) {
+        const titleEl = document.createElement('h2');
+        titleEl.className = 'view-title';
+        titleEl.textContent = title;
+        DOM.animeListContainer.appendChild(titleEl);
+    }
+
+    if (!animes || animes.length === 0) {
+        DOM.animeListContainer.innerHTML += '<p>No se encontraron animes.</p>';
+        return;
+    }
+
+    if (groupByDay) {
+        const days = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo', 'Especial'];
+        let animesFound = false;
+        days.forEach(day => {
+            const animesOfTheDay = animes.filter(a => a.day_of_week === day);
+            if (animesOfTheDay.length > 0) {
+                animesFound = true;
+                const daySection = document.createElement('section');
+                daySection.className = 'day-section';
+                daySection.innerHTML = `<h3>${day}</h3>`;
+                const animeList = document.createElement('div');
+                animeList.className = 'anime-day-list';
+                animesOfTheDay.forEach(anime => animeList.appendChild(createAnimeCard(anime)));
+                daySection.appendChild(animeList);
+                DOM.animeListContainer.appendChild(daySection);
+            }
+        });
+        if (!animesFound) {
+            DOM.animeListContainer.innerHTML = '<p>No hay animes en esta temporada. ¡Añade uno con el botón `+`!</p>';
         }
-    });
-    if (!animesFound) {
-        DOM.animeListContainer.innerHTML = '<p>No hay animes en esta temporada. ¡Añade uno con el botón `+`!</p>';
+    } else {
+        // Render as a flat list
+        const animeList = document.createElement('div');
+        animeList.className = 'anime-day-list'; // Re-use class for consistent grid styling
+        animes.forEach(anime => animeList.appendChild(createAnimeCard(anime)));
+        DOM.animeListContainer.appendChild(animeList);
     }
 };
 
