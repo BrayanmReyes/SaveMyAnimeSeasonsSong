@@ -1,5 +1,6 @@
 import * as api from './api.js';
 import * as ui from './ui.js';
+import { renderArtistList } from './artists.js';
 
 const state = {
     currentSeasonId: null,
@@ -347,6 +348,27 @@ function setupEventListeners() {
     ui.DOM.scrollToTopBtn.addEventListener('click', () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+
+    // --- View Switching ---
+    const showSeasonsView = () => {
+        ui.DOM.seasonManager.style.display = 'flex';
+        ui.DOM.animeListContainer.style.display = 'block';
+        ui.DOM.artistViewContainer.style.display = 'none';
+        ui.DOM.addAnimeBtn.style.display = 'flex';
+    };
+
+    const showArtistsView = async () => {
+        ui.DOM.seasonManager.style.display = 'none';
+        ui.DOM.animeListContainer.style.display = 'none';
+        ui.DOM.artistViewContainer.style.display = 'block';
+        ui.DOM.addAnimeBtn.style.display = 'none';
+
+        const artists = await api.getAllArtists();
+        renderArtistList(artists, ui.DOM.artistViewContainer);
+    };
+
+    ui.DOM.artistsBtn.addEventListener('click', showArtistsView);
+    ui.DOM.mainTitle.addEventListener('click', showSeasonsView);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

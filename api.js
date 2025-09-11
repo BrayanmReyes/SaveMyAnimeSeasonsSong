@@ -121,6 +121,17 @@ export const addSeason = async (name) => {
     return true;
 };
 
+export const getAllArtists = async () => {
+    const { data, error } = await _supabase.rpc('get_all_artists');
+    if (error) {
+        console.error('Error fetching artists:', error);
+        return [];
+    }
+    // The RPC returns an array of objects like { artist_name: '...' }
+    // We map it to a simple array of strings.
+    return data.map(item => item.artist_name);
+};
+
 export const getContinuableAnimes = async () => {
     const { data, error } = await _supabase
         .from('animes')
