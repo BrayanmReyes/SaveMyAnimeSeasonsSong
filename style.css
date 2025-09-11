@@ -544,6 +544,7 @@ legend {
 
 /* Read-Only Mode Styles */
 .readonly-mode #season-manager #add-season-btn,
+.readonly-mode #season-manager #add-continuation-btn,
 .readonly-mode #season-manager #edit-season-btn,
 .readonly-mode #season-manager #delete-season-btn,
 .readonly-mode #add-anime-btn,

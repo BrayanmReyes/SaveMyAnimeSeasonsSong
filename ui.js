@@ -1,10 +1,12 @@
 export const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
 export const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
 export const youtubeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>`;
+export const linkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="continuation-icon"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"></path></svg>`;
 
 export const DOM = {
     seasonSelector: document.getElementById('season-selector'),
     addSeasonBtn: document.getElementById('add-season-btn'),
+    addContinuationBtn: document.getElementById('add-continuation-btn'),
     editSeasonBtn: document.getElementById('edit-season-btn'),
     deleteSeasonBtn: document.getElementById('delete-season-btn'),
     animeListContainer: document.getElementById('anime-list-container'),
@@ -14,7 +16,10 @@ export const DOM = {
     closeBtns: document.querySelectorAll('.close-btn'),
     seasonNameInput: document.getElementById('season-name-input'),
     saveSeasonBtn: document.getElementById('save-season-btn'),
+    newAnimeSection: document.getElementById('new-anime-section'),
     animeNameInput: document.getElementById('anime-name-input'),
+    continuationSection: document.getElementById('continuation-section'),
+    continuationSelect: document.getElementById('continuation-select'),
     dayOfWeekInput: document.getElementById('day-of-week-input'),
     commentsInput: document.getElementById('comments-input'),
     openingsList: document.getElementById('openings-list'),
@@ -74,9 +79,10 @@ export const renderAnimes = (animes) => {
                 const endingsHTML = anime.endings && anime.endings.length > 0
                     ? anime.endings.map((en, index) => `<li class="song-item"><strong class="song-title">ED ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${en.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${en.romaji_name || 'N/A'}</span>${en.youtube_url ? `<a href="${en.youtube_url}" target="_blank" title="${en.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
                     : '<li>N/A</li>';
+                const continuationIcon = anime.main_anime_id ? linkIcon : '';
                 animeCard.innerHTML = `
                     <div class="anime-card-header">
-                        <h4>${anime.name}</h4>
+                        <h4>${continuationIcon}${anime.name}</h4>
                         <span class="accordion-icon"></span>
                     </div>
                     <div class="anime-details">
