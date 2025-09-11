@@ -164,6 +164,7 @@ function setupEventListeners() {
             const animes = await api.getAnimesBySeason(state.currentSeasonId);
             ui.renderAnimes(animes);
             ui.closeModal(ui.DOM.addAnimeModal);
+            state.editingAnimeId = null; // Reset editing state
         } else {
             alert(`No se pudo ${state.editingAnimeId ? 'actualizar' : 'guardar'} el anime.`);
         }

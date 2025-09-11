@@ -546,7 +546,7 @@ legend {
 .readonly-mode #season-manager #add-season-btn,
 .readonly-mode #season-manager #edit-season-btn,
 .readonly-mode #season-manager #delete-season-btn,
-.readonly-mode .fab,
+.readonly-mode #add-anime-btn,
 .readonly-mode .anime-actions {
     display: none !important;
 }
