@@ -300,12 +300,12 @@ function setupEventListeners() {
 
                 ui.DOM.openingsList.innerHTML = '';
                 if(anime.openings) {
-                    anime.openings.forEach(op => ui.DOM.openingsList.appendChild(ui.createSongEntryForm({ jpName: op.jp_name, romajiName: op.romaji_name, youtubeUrl: op.youtube_url })));
+                    anime.openings.forEach(op => ui.DOM.openingsList.appendChild(ui.createSongEntryForm({ jpName: op.jpName, romajiName: op.romajiName, youtubeUrl: op.youtubeUrl })));
                 }
 
                 ui.DOM.endingsList.innerHTML = '';
                 if(anime.endings) {
-                    anime.endings.forEach(en => ui.DOM.endingsList.appendChild(ui.createSongEntryForm({ jpName: en.jp_name, romajiName: en.romaji_name, youtubeUrl: en.youtube_url })));
+                    anime.endings.forEach(en => ui.DOM.endingsList.appendChild(ui.createSongEntryForm({ jpName: en.jpName, romajiName: en.romajiName, youtubeUrl: en.youtubeUrl })));
                 }
 
                 ui.openModal(ui.DOM.addAnimeModal);
