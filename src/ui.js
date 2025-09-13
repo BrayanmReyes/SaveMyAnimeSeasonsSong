@@ -61,6 +61,33 @@ export const createSongEntryForm = (song = {}) => {
     return entryDiv;
 };
 
+export function addSongEntry(listElement) {
+    listElement.appendChild(createSongEntryForm());
+}
+
+export function getSongEntries(listElement) {
+    return Array.from(listElement.querySelectorAll('.song-entry')).map(entry => ({
+        jp_name: entry.querySelector('.song-jp-name').value.trim(),
+        romaji_name: entry.querySelector('.song-romaji-name').value.trim(),
+        youtube_url: entry.querySelector('.song-youtube-url').value.trim(),
+    })).filter(s => s.jp_name || s.romaji_name || s.youtube_url);
+}
+
+export function toggleAccordion(card) {
+    const isExpanded = card.classList.contains('expanded');
+    // Close all other cards
+    DOM.animeListContainer.querySelectorAll('.anime-card').forEach(c => {
+        c.classList.remove('expanded');
+        c.querySelector('.anime-details').style.maxHeight = null;
+    });
+    // If the clicked card was not already open, open it
+    if (!isExpanded) {
+        card.classList.add('expanded');
+        const details = card.querySelector('.anime-details');
+        details.style.maxHeight = details.scrollHeight + 'px';
+    }
+}
+
 const createAnimeCard = (anime, index) => {
     const animeCard = document.createElement('div');
     animeCard.className = 'anime-card';
@@ -183,14 +210,81 @@ export const closeModal = (modal) => {
     }
     // Also reset anime form on close
     if (modal === DOM.addAnimeModal) {
-        DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
-        DOM.animeNameInput.value = '';
-        DOM.dayOfWeekInput.value = 'Lunes';
-        DOM.commentsInput.value = '';
-        DOM.openingsList.innerHTML = '';
-        DOM.endingsList.innerHTML = '';
+        // Reset on close
+        prepareNewAnimeModal();
     }
 };
+
+export function prepareNewAnimeModal() {
+    DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
+    DOM.continuationSection.style.display = 'none';
+    DOM.newAnimeSection.style.display = 'block';
+    DOM.openingsList.parentElement.style.display = 'block';
+    DOM.endingsList.parentElement.style.display = 'block';
+    DOM.commentsInput.style.display = 'block';
+    DOM.animeNameInput.readOnly = false;
+    DOM.commentsInput.readOnly = false;
+    DOM.animeNameInput.title = '';
+    DOM.commentsInput.title = '';
+
+    // Clear fields
+    DOM.animeNameInput.value = '';
+    DOM.dayOfWeekInput.value = 'Lunes';
+    DOM.commentsInput.value = '';
+    DOM.openingsList.innerHTML = '';
+    DOM.endingsList.innerHTML = '';
+    DOM.continuationSelect.innerHTML = '<option value="">Selecciona un anime...</option>';
+}
+
+export function prepareContinuationModal(animes) {
+    DOM.addAnimeModal.querySelector('h2').textContent = 'Añadir Continuación';
+    DOM.continuationSection.style.display = 'block';
+    DOM.newAnimeSection.style.display = 'none';
+    DOM.openingsList.parentElement.style.display = 'none';
+    DOM.endingsList.parentElement.style.display = 'none';
+    DOM.commentsInput.style.display = 'none';
+
+    const select = DOM.continuationSelect;
+    select.innerHTML = '<option value="">Selecciona un anime...</option>';
+    animes.forEach(anime => {
+        const option = document.createElement('option');
+        option.value = anime.id;
+        option.textContent = anime.name;
+        select.appendChild(option);
+    });
+}
+
+export function prepareEditAnimeModal(anime) {
+    prepareNewAnimeModal(); // Start with a clean slate
+
+    DOM.addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
+    DOM.animeNameInput.value = anime.name;
+    DOM.dayOfWeekInput.value = anime.day_of_week;
+    DOM.commentsInput.value = anime.comments || '';
+
+    const isContinuation = !!anime.main_anime_id;
+    DOM.animeNameInput.readOnly = isContinuation;
+    DOM.commentsInput.readOnly = isContinuation;
+     if(isContinuation) {
+        DOM.animeNameInput.title = 'El nombre se hereda del anime original y no se puede cambiar aquí.';
+        DOM.commentsInput.title = 'Los comentarios se heredan del anime original y no se pueden cambiar aquí.';
+    }
+
+    if (anime.openings) {
+        anime.openings.forEach(op => {
+            const songData = { jpName: op.jp_name, romajiName: op.romaji_name, youtubeUrl: op.youtube_url };
+            DOM.openingsList.appendChild(createSongEntryForm(songData));
+        });
+    }
+
+    if (anime.endings) {
+        anime.endings.forEach(en => {
+            const songData = { jpName: en.jp_name, romajiName: en.romaji_name, youtubeUrl: en.youtube_url };
+            DOM.endingsList.appendChild(createSongEntryForm(songData));
+        });
+    }
+}
+
 
 export const updateThemeIcons = (theme) => {
     DOM.themeIconSun.style.display = theme === 'dark' ? 'none' : 'block';
