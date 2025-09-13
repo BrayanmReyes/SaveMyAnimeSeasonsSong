@@ -36,6 +36,27 @@ async function initApp() {
     }
 }
 
+export async function reloadSeasons() {
+    const seasons = await api.getSeasons();
+    const currentSeasonId = getState().currentSeasonId;
+
+    let newSeasonId = currentSeasonId;
+    if (!seasons.some(s => s.id === newSeasonId)) {
+        newSeasonId = seasons.length > 0 ? seasons[0].id : null;
+        setState({ currentSeasonId: newSeasonId });
+        localStorage.setItem('currentSeasonId', newSeasonId);
+    }
+
+    ui.renderSeasons(seasons, newSeasonId);
+
+    if (newSeasonId) {
+        const animes = await api.getAnimesBySeason(newSeasonId);
+        ui.renderAnimes(animes);
+    } else {
+        ui.DOM.animeListContainer.innerHTML = '<p>Crea una temporada para empezar.</p>';
+    }
+}
+
 function setupEventListeners() {
     ui.DOM.seasonSelector.addEventListener('change', handlers.handleSeasonChange);
     ui.DOM.addSeasonBtn.addEventListener('click', handlers.handleAddSeason);

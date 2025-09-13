@@ -44,7 +44,19 @@ export const DOM = {
     youtubeIframe: document.getElementById('youtube-iframe'),
     openInYtLink: document.getElementById('open-in-yt-link'),
     scrollToTopBtn: document.getElementById('scroll-to-top-btn'),
+    errorToast: document.getElementById('error-toast'),
 };
+
+let errorTimeout;
+export function showError(message) {
+    clearTimeout(errorTimeout);
+    DOM.errorToast.textContent = message;
+    DOM.errorToast.classList.add('visible');
+
+    errorTimeout = setTimeout(() => {
+        DOM.errorToast.classList.remove('visible');
+    }, 3000);
+}
 
 export const createSongEntryForm = (song = {}) => {
     const entryDiv = document.createElement('div');

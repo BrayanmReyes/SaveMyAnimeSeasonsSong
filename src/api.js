@@ -3,40 +3,42 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 export const getSeasons = async () => {
-    const { data, error } = await _supabase.from('seasons').select('*').order('created_at');
-    if (error) console.error('Error fetching seasons:', error);
-    return data || [];
+    try {
+        const { data, error } = await _supabase.from('seasons').select('*').order('created_at');
+        if (error) throw error;
+        return data || [];
+    } catch (error) {
+        console.error('Error fetching seasons:', error);
+        return [];
+    }
 };
 
 export const getAnimesBySeason = async (seasonId) => {
     if (!seasonId) return [];
+    try {
+        const { data: animesInSeason, error: initialError } = await _supabase
+            .from('animes')
+            .select('*')
+            .eq('season_id', seasonId)
+            .order('created_at');
 
-    // 1. Fetch all anime entries for the season
-    const { data: animesInSeason, error: initialError } = await _supabase
-        .from('animes')
-        .select('*')
-        .eq('season_id', seasonId)
-        .order('created_at');
-
-    if (initialError) {
-        console.error('Error fetching animes for season:', initialError);
-        return [];
-    }
+        if (initialError) throw initialError;
 
     // 2. Process each anime to fetch correct songs/details
     const processedAnimes = await Promise.all(animesInSeason.map(async (anime) => {
-        if (anime.main_anime_id) {
-            // It's a continuation, fetch details from the main anime
-            const { data: mainAnime, error: mainError } = await _supabase
-                .from('animes')
-                .select('name, comments, openings(*), endings(*)')
-                .eq('id', anime.main_anime_id)
-                .single();
+        try {
+            if (anime.main_anime_id) {
+                // It's a continuation, fetch details from the main anime
+                const { data: mainAnime, error: mainError } = await _supabase
+                    .from('animes')
+                    .select('name, comments, openings(*), endings(*)')
+                    .eq('id', anime.main_anime_id)
+                    .single();
 
-            if (mainError) {
-                console.error(`Error fetching main anime details for ${anime.id}:`, mainError);
-                return { ...anime, name: 'Error loading details' }; // Return gracefully
-            }
+                if (mainError) {
+                    console.error(`Error fetching main anime details for ${anime.id}:`, mainError);
+                    return { ...anime, name: 'Error loading details' }; // Return gracefully
+                }
 
             // Merge data: keep continuation's ID and day, but use main's details
             return {
@@ -60,22 +62,28 @@ export const getAnimesBySeason = async (seasonId) => {
 
             return { ...anime, ...songs };
         }
+    } catch (error) {
+        console.error(`Error processing anime ${anime.id}:`, error);
+        return { ...anime, name: 'Error loading details' };
+    }
     }));
 
     return processedAnimes;
+    } catch (error) {
+        console.error('Error in getAnimesBySeason:', error);
+        return [];
+    }
 };
 
 export const getAnimeDetails = async (animeId) => {
-    const { data: anime, error } = await _supabase
-        .from('animes')
-        .select('*')
-        .eq('id', animeId)
-        .single();
+    try {
+        const { data: anime, error } = await _supabase
+            .from('animes')
+            .select('*')
+            .eq('id', animeId)
+            .single();
 
-    if (error) {
-        console.error('Error fetching anime details:', error);
-        return null;
-    }
+        if (error) throw error;
 
     if (anime.main_anime_id) {
         // It's a continuation, get shared data from main
@@ -110,15 +118,21 @@ export const getAnimeDetails = async (animeId) => {
         }
         return { ...anime, ...songs };
     }
+    } catch (error) {
+        console.error('Error fetching anime details:', error);
+        return null;
+    }
 };
 
 export const addSeason = async (name) => {
-    const { error } = await _supabase.from('seasons').insert({ name });
-    if (error) {
+    try {
+        const { error } = await _supabase.from('seasons').insert({ name });
+        if (error) throw error;
+        return true;
+    } catch (error) {
         console.error('Error creating season:', error);
         return false;
     }
-    return true;
 };
 
 export const getSongsByArtist = async (artistName) => {
@@ -173,34 +187,36 @@ export const getContinuableAnimes = async () => {
 };
 
 export const updateSeason = async (id, name) => {
-    const { error } = await _supabase.from('seasons').update({ name }).eq('id', id);
-    if (error) {
+    try {
+        const { error } = await _supabase.from('seasons').update({ name }).eq('id', id);
+        if (error) throw error;
+        return true;
+    } catch (error) {
         console.error('Error updating season:', error);
         return false;
     }
-    return true;
 };
 
 export const deleteSeason = async (id) => {
-    const { error } = await _supabase.from('seasons').delete().eq('id', id);
-    if (error) {
+    try {
+        const { error } = await _supabase.from('seasons').delete().eq('id', id);
+        if (error) throw error;
+        return true;
+    } catch (error) {
         console.error('Error deleting season:', error);
         return false;
     }
-    return true;
 };
 
 export const addAnime = async (animeData, openings, endings) => {
-    const { data: newAnime, error: animeError } = await _supabase
-        .from('animes')
-        .insert(animeData)
-        .select()
-        .single();
+    try {
+        const { data: newAnime, error: animeError } = await _supabase
+            .from('animes')
+            .insert(animeData)
+            .select()
+            .single();
 
-    if (animeError) {
-        console.error('Error creating anime:', animeError);
-        return null;
-    }
+        if (animeError) throw animeError;
 
     // Only add songs if it's not a continuation entry
     if (!newAnime.main_anime_id) {
@@ -211,24 +227,26 @@ export const addAnime = async (animeData, openings, endings) => {
         }
         if (endings && endings.length > 0) {
             const endingsWithId = endings.map(e => ({ ...e, anime_id: animeId }));
-            await _supabase.from('endings').insert(endingsWithId);
+            const { error } = await _supabase.from('endings').insert(endingsWithId);
+            if(error) throw error;
         }
     }
     return newAnime;
+    } catch (error) {
+        console.error('Error creating anime:', error);
+        return null;
+    }
 };
 
 export const updateAnime = async (id, animeData, openings, endings) => {
-    // First, find out if this is a continuation anime
-    const { data: anime, error: fetchError } = await _supabase
-        .from('animes')
-        .select('main_anime_id')
-        .eq('id', id)
-        .single();
+    try {
+        const { data: anime, error: fetchError } = await _supabase
+            .from('animes')
+            .select('main_anime_id')
+            .eq('id', id)
+            .single();
 
-    if (fetchError) {
-        console.error('Error fetching anime before update:', fetchError);
-        return false;
-    }
+        if (fetchError) throw fetchError;
 
     // ID for updating songs and comments is the main anime's ID, or its own if it's a main anime
     const songUpdateId = anime.main_anime_id || id;
@@ -257,16 +275,44 @@ export const updateAnime = async (id, animeData, openings, endings) => {
     }
     if (endings && endings.length > 0) {
         const endingsWithId = endings.map(e => ({ ...e, anime_id: songUpdateId }));
-        await _supabase.from('endings').insert(endingsWithId);
+        const { error } = await _supabase.from('endings').insert(endingsWithId);
+        if(error) throw error;
     }
     return true;
+    } catch (error) {
+        console.error('Error updating anime:', error);
+        return false;
+    }
 };
 
 export const deleteAnime = async (id) => {
-    const { error } = await _supabase.from('animes').delete().eq('id', id);
-    if (error) {
-        console.error('Error deleting anime:', error);
-        return false;
+    try {
+        // Check if this anime is a main anime for any other anime
+        const { data: continuations, error: continuationError } = await _supabase
+            .from('animes')
+            .select('id')
+            .eq('main_anime_id', id);
+
+        if (continuationError) {
+            console.error('Error checking for continuations:', continuationError);
+            throw new Error('No se pudo verificar si el anime tiene continuaciones.');
+        }
+
+        if (continuations && continuations.length > 0) {
+            throw new Error('Este anime tiene continuaciones en otras temporadas. Por favor, elimínelas primero.');
+        }
+
+        // If no continuations, proceed with deletion
+        const { error } = await _supabase.from('animes').delete().eq('id', id);
+
+        if (error) {
+            console.error('Error deleting anime:', error);
+            throw new Error('No se pudo eliminar el anime.');
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error('Caught error in deleteAnime:', error);
+        return { success: false, message: error.message };
     }
-    return true;
 };

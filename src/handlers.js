@@ -2,6 +2,7 @@ import * as api from './api.js';
 import * as ui from './ui.js';
 import { getState, setState } from './state.js';
 import { renderArtistList } from './artists.js';
+import { reloadSeasons } from './app.js';
 
 export async function handleSeasonChange(e) {
     const newSeasonId = parseInt(e.target.value);
@@ -22,7 +23,7 @@ export function handleAddSeason() {
 
 export function handleEditSeason() {
     const { currentSeasonId } = getState();
-    if (!currentSeasonId) return alert('No hay ninguna temporada seleccionada para editar.');
+    if (!currentSeasonId) return ui.showError('No hay ninguna temporada seleccionada para editar.');
 
     setState({ editingSeasonId: currentSeasonId });
     const seasonName = ui.DOM.seasonSelector.options[ui.DOM.seasonSelector.selectedIndex].text;
@@ -34,15 +35,14 @@ export function handleEditSeason() {
 
 export async function handleDeleteSeason() {
     const { currentSeasonId } = getState();
-    if (!currentSeasonId) return alert('No hay temporada seleccionada.');
+    if (!currentSeasonId) return ui.showError('No hay temporada seleccionada.');
     if (confirm('¿Estás seguro de que quieres eliminar esta temporada?')) {
         const success = await api.deleteSeason(currentSeasonId);
         if (success) {
             localStorage.removeItem('currentSeasonId');
-            // This needs to trigger a reload, which will be handled by app.js
-            location.reload(); // Temporary solution until app.js is refactored
+            reloadSeasons();
         } else {
-            alert('No se pudo eliminar la temporada.');
+            ui.showError('No se pudo eliminar la temporada.');
         }
     }
 }
@@ -62,17 +62,16 @@ export async function handleSaveSeason() {
             ui.DOM.seasonNameInput.value = '';
             ui.closeModal(ui.DOM.addSeasonModal);
             setState({ editingSeasonId: null });
-             // This needs to trigger a reload, which will be handled by app.js
-            location.reload(); // Temporary solution until app.js is refactored
+            reloadSeasons();
         } else {
-            alert(`No se pudo ${editingSeasonId ? 'actualizar' : 'crear'} la temporada.`);
+            ui.showError(`No se pudo ${editingSeasonId ? 'actualizar' : 'crear'} la temporada.`);
         }
     }
 }
 
 export function handleAddAnime() {
     const { currentSeasonId } = getState();
-    if (!currentSeasonId) return alert('Por favor, crea y selecciona una temporada primero.');
+    if (!currentSeasonId) return ui.showError('Por favor, crea y selecciona una temporada primero.');
     setState({ editingAnimeId: null, isContinuationMode: false });
     ui.prepareNewAnimeModal();
     ui.openModal(ui.DOM.addAnimeModal);
@@ -80,13 +79,13 @@ export function handleAddAnime() {
 
 export async function handleAddContinuation() {
     const { currentSeasonId } = getState();
-    if (!currentSeasonId) return alert('Por favor, selecciona una temporada primero.');
+    if (!currentSeasonId) return ui.showError('Por favor, selecciona una temporada primero.');
 
     setState({ isContinuationMode: true });
     const animes = await api.getContinuableAnimes();
 
     if (animes.length === 0) {
-        return alert('No hay animes en temporadas anteriores para continuar.');
+        return ui.showError('No hay animes en temporadas anteriores para continuar.');
     }
 
     ui.prepareContinuationModal(animes);
@@ -99,7 +98,7 @@ export async function handleSaveAnime() {
 
     if (isContinuationMode) {
         const main_anime_id = parseInt(ui.DOM.continuationSelect.value);
-        if (!main_anime_id) return alert('Por favor, selecciona un anime para continuar.');
+        if (!main_anime_id) return ui.showError('Por favor, selecciona un anime para continuar.');
 
         const selectedOption = ui.DOM.continuationSelect.options[ui.DOM.continuationSelect.selectedIndex];
         const animeData = {
@@ -112,7 +111,7 @@ export async function handleSaveAnime() {
         success = await api.addAnime(animeData, [], []);
     } else {
         const name = ui.DOM.animeNameInput.value.trim();
-        if (!name) return alert('El nombre del anime no puede estar vacío.');
+        if (!name) return ui.showError('El nombre del anime no puede estar vacío.');
 
         const animeData = {
             name: name,
@@ -137,7 +136,7 @@ export async function handleSaveAnime() {
         ui.closeModal(ui.DOM.addAnimeModal);
         setState({ editingAnimeId: null, isContinuationMode: false });
     } else {
-        alert(`No se pudo ${editingAnimeId ? 'actualizar' : 'guardar'} el anime.`);
+        ui.showError(`No se pudo ${editingAnimeId ? 'actualizar' : 'guardar'} el anime.`);
     }
 }
 
@@ -170,12 +169,12 @@ export function handleAnimeListClick(e) {
 async function handleDeleteAnime(animeId) {
     const { currentSeasonId } = getState();
     if (confirm('¿Estás seguro de que quieres eliminar este anime?')) {
-        const success = await api.deleteAnime(animeId);
-        if (success) {
+        const result = await api.deleteAnime(animeId);
+        if (result.success) {
             const animes = await api.getAnimesBySeason(currentSeasonId);
             ui.renderAnimes(animes);
         } else {
-            alert('No se pudo eliminar el anime.');
+            ui.showError(result.message || 'No se pudo eliminar el anime.');
         }
     }
 }
@@ -210,14 +209,19 @@ export function handleLogout() {
 }
 
 export function handleLoginSubmit() {
-    // This is insecure. In a real app, use environment variables and a proper auth system.
-    if (ui.DOM.passwordInput.value === 'admin') {
+    // SECURITY WARNING: This is not a secure way to handle authentication.
+    // The password is still checked on the client-side, which is insecure.
+    // In a real application, you should:
+    // 1. Use environment variables to store secrets.
+    // 2. Implement a proper server-side authentication flow (e.g., with Supabase Auth).
+    const password = ui.DOM.passwordInput.value;
+    if (password === 'admin') { // Replace 'admin' with a password from a secure source
         sessionStorage.setItem('isAdmin', 'true');
         ui.enterAdminMode();
         ui.closeModal(ui.DOM.loginModal);
         ui.DOM.passwordInput.value = '';
     } else {
-        alert('Contraseña incorrecta.');
+        ui.showError('Contraseña incorrecta.');
         ui.DOM.passwordInput.value = '';
     }
 }
