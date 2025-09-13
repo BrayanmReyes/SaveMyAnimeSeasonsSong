@@ -61,10 +61,15 @@ export const createSongEntryForm = (song = {}) => {
     return entryDiv;
 };
 
-const createAnimeCard = (anime) => {
+const createAnimeCard = (anime, index) => {
     const animeCard = document.createElement('div');
     animeCard.className = 'anime-card';
     animeCard.dataset.animeId = anime.id;
+
+    // Staggered animation
+    animeCard.style.animation = `card-fade-in 0.5s ease-out ${index * 0.05}s forwards`;
+    animeCard.style.opacity = 0; // Start hidden
+
     const openingsHTML = anime.openings && anime.openings.length > 0
         ? anime.openings.map((op, index) => `<li class="song-item"><strong class="song-title">OP ${index + 1}:</strong><div class="song-details"><span><strong>JP:</strong> ${op.jp_name || 'N/A'}</span><span><strong>Romaji:</strong> ${op.romaji_name || 'N/A'}</span>${op.youtube_url ? `<a href="${op.youtube_url}" target="_blank" title="${op.youtube_url}" class="youtube-link">${youtubeIcon}</a>` : ''}</div></li>`).join('')
         : '<li>N/A</li>';
@@ -120,7 +125,7 @@ export const renderAnimes = (animes, options = {}) => {
                 daySection.innerHTML = `<h3>${day}</h3>`;
                 const animeList = document.createElement('div');
                 animeList.className = 'anime-day-list';
-                animesOfTheDay.forEach(anime => animeList.appendChild(createAnimeCard(anime)));
+                animesOfTheDay.forEach((anime, index) => animeList.appendChild(createAnimeCard(anime, index)));
                 daySection.appendChild(animeList);
                 DOM.animeListContainer.appendChild(daySection);
             }
@@ -132,7 +137,7 @@ export const renderAnimes = (animes, options = {}) => {
         // Render as a flat list
         const animeList = document.createElement('div');
         animeList.className = 'anime-day-list'; // Re-use class for consistent grid styling
-        animes.forEach(anime => animeList.appendChild(createAnimeCard(anime)));
+        animes.forEach((anime, index) => animeList.appendChild(createAnimeCard(anime, index)));
         DOM.animeListContainer.appendChild(animeList);
     }
 };
