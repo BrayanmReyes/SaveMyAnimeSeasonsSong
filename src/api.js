@@ -31,7 +31,7 @@ export const getAnimesBySeason = async (seasonId) => {
                 // It's a continuation, fetch details from the main anime
                 const { data: mainAnime, error: mainError } = await _supabase
                     .from('animes')
-                    .select('name, comments, openings(*), endings(*)')
+                    .select('name, comments, openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
                     .eq('id', anime.main_anime_id)
                     .single();
 
@@ -52,7 +52,7 @@ export const getAnimesBySeason = async (seasonId) => {
             // It's a main anime, just fetch its own songs
             const { data: songs, error: songError } = await _supabase
                 .from('animes')
-                .select('openings(*), endings(*)')
+                .select('openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
                 .eq('id', anime.id)
                 .single();
 
@@ -89,7 +89,7 @@ export const getAnimeDetails = async (animeId) => {
             // It's a continuation, get shared data from main
             const { data: mainAnime, error: mainError } = await _supabase
                 .from('animes')
-                .select('name, comments, openings(*), endings(*)')
+                .select('name, comments, openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
                 .eq('id', anime.main_anime_id)
                 .single();
 
@@ -109,7 +109,7 @@ export const getAnimeDetails = async (animeId) => {
             // It's a main anime, get its own songs separately and merge
             const { data: songs, error: songError } = await _supabase
                 .from('animes')
-                .select('openings(*), endings(*)')
+                .select('openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
                 .eq('id', anime.id)
                 .single();
 
@@ -151,7 +151,7 @@ export const searchAnimes = async (searchTerm) => {
 
     const { data, error } = await _supabase
         .from('animes')
-        .select('*, openings(*), endings(*)')
+        .select('*, openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
         .is('main_anime_id', null) // Only search against main entries to avoid duplicates
         .ilike('name', `%${searchTerm}%`);
 

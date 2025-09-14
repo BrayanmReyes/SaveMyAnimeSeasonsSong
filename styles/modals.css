@@ -108,7 +108,16 @@
 
 #add-anime-modal fieldset {
     background-color: var(--song-item-odd-bg);
-    border: 1px dashed var(--border-color);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#add-anime-modal fieldset legend {
+    font-weight: 600;
+    padding: 0 0.5rem;
+    margin-left: -0.5rem; /* Align with padding */
 }
 
 #add-anime-modal .song-entry {
