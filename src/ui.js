@@ -62,9 +62,9 @@ export const createSongEntryForm = (song = {}) => {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'song-entry';
     entryDiv.innerHTML = `
-        <input type="text" class="song-jp-name" placeholder="Nombre en Japonés" value="${song.jpName || ''}">
-        <input type="text" class="song-romaji-name" placeholder="Nombre en Romanji" value="${song.romajiName || ''}">
-        <input type="url" class="song-youtube-url" placeholder="URL de YouTube" value="${song.youtubeUrl || ''}">
+        <input type="text" class="song-jp-name" placeholder="Nombre en Japonés" value="${song.jp_name || ''}">
+        <input type="text" class="song-romaji-name" placeholder="Nombre en Romanji" value="${song.romaji_name || ''}">
+        <input type="url" class="song-youtube-url" placeholder="URL de YouTube" value="${song.youtube_url || ''}">
         <button type="button" class="delete-entry-btn">Eliminar</button>
     `;
     entryDiv.querySelector('.delete-entry-btn').addEventListener('click', () => {
@@ -284,15 +284,13 @@ export function prepareEditAnimeModal(anime) {
 
     if (anime.openings) {
         anime.openings.forEach(op => {
-            const songData = { jpName: op.jp_name, romajiName: op.romaji_name, youtubeUrl: op.youtube_url };
-            DOM.openingsList.appendChild(createSongEntryForm(songData));
+            DOM.openingsList.appendChild(createSongEntryForm(op));
         });
     }
 
     if (anime.endings) {
         anime.endings.forEach(en => {
-            const songData = { jpName: en.jp_name, romajiName: en.romaji_name, youtubeUrl: en.youtube_url };
-            DOM.endingsList.appendChild(createSongEntryForm(songData));
+            DOM.endingsList.appendChild(createSongEntryForm(en));
         });
     }
 }
