@@ -79,15 +79,14 @@ export const getAnimeDetails = async (animeId) => {
     try {
         const { data: anime, error } = await _supabase
             .from('animes')
-            .select('*, openings(*), endings(*)')
+            .select('*')
             .eq('id', animeId)
             .single();
 
         if (error) throw error;
 
         if (anime.main_anime_id) {
-            // It's a continuation, so its own `openings` and `endings` will be empty.
-            // We need to fetch them from the main anime.
+            // It's a continuation, get shared data from main
             const { data: mainAnime, error: mainError } = await _supabase
                 .from('animes')
                 .select('name, comments, openings(*), endings(*)')
@@ -107,8 +106,19 @@ export const getAnimeDetails = async (animeId) => {
                 endings: mainAnime.endings,
             };
         } else {
-            // It's a main anime. The first query should have already fetched its songs.
-            return anime;
+            // It's a main anime, get its own songs separately and merge
+            const { data: songs, error: songError } = await _supabase
+                .from('animes')
+                .select('openings(*), endings(*)')
+                .eq('id', anime.id)
+                .single();
+
+            if (songError) {
+                console.error(`Error fetching songs for ${anime.id}:`, songError);
+                return null; // Return null or the anime without songs
+            }
+
+            return { ...anime, ...songs };
         }
     } catch (error) {
         console.error('Error fetching anime details:', error);
