@@ -297,7 +297,6 @@ export function prepareEditAnimeModal(anime) {
     }
 }
 
-
 export const updateThemeIcons = (theme) => {
     DOM.themeIconSun.style.display = theme === 'dark' ? 'none' : 'block';
     DOM.themeIconMoon.style.display = theme === 'dark' ? 'block' : 'none';

@@ -161,7 +161,7 @@ export function handleAnimeListClick(e) {
 
     if (e.target.classList.contains('delete-anime-btn')) {
         handleDeleteAnime(animeId);
-    } else if (e.target.classList.contains('edit-anime-btn')) {
+    } else if (e.target.closest('.edit-anime-btn')) {
         handleEditAnime(animeId);
     }
 }
