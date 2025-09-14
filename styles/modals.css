@@ -112,9 +112,49 @@
 }
 
 #add-anime-modal .song-entry {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     padding: 1rem;
+    margin-bottom: 0.5rem; /* Space between entries */
+    border-radius: 4px;
+}
+
+#add-anime-modal .song-entry input {
+    margin-bottom: 0; /* Override default margin */
+}
+
+#add-anime-modal .song-entry .delete-entry-btn {
+    background-color: var(--action-danger-bg);
+    color: white;
+    border: none;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    cursor: pointer;
+    justify-self: end;
+}
+#add-anime-modal .song-entry .delete-entry-btn:hover {
+    background-color: var(--action-danger-hover-bg);
+}
+
+@media (max-width: 850px) {
+    #add-anime-modal .modal-content {
+        max-width: 95vw;
+        padding: 1.5rem;
+    }
+
+    #add-anime-modal .song-entry {
+        grid-template-columns: 1fr; /* Stack everything */
+        gap: 0.5rem;
+    }
+
+    #add-anime-modal .song-entry .delete-entry-btn {
+        width: 100%; /* Make delete button full width */
+        margin-top: 0.5rem;
+    }
 }
 
 /* Video Modal Styles */
