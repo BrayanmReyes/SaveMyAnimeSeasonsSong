@@ -89,7 +89,7 @@ export const getAnimeDetails = async (animeId) => {
         // It's a continuation, get shared data from main
         const { data: mainAnime, error: mainError } = await _supabase
             .from('animes')
-            .select('name, comments, openings(*), endings(*)')
+            .select('name, comments, openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
             .eq('id', anime.main_anime_id)
             .single();
 
@@ -109,7 +109,7 @@ export const getAnimeDetails = async (animeId) => {
         // It's a main anime, get its own songs
         const { data: songs, error: songError } = await _supabase
             .from('animes')
-            .select('openings(*), endings(*)')
+            .select('openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
             .eq('id', anime.id)
             .single();
         if (songError) {
