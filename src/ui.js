@@ -199,7 +199,7 @@ export const renderSeasons = (seasons, currentSeasonId) => {
 };
 
 export const openModal = (modal) => {
-    modal.style.display = 'block';
+    modal.style.display = 'flex';
 };
 
 export const openVideoModal = (url) => {
