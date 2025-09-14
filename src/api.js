@@ -79,45 +79,37 @@ export const getAnimeDetails = async (animeId) => {
     try {
         const { data: anime, error } = await _supabase
             .from('animes')
-            .select('*')
+            .select('*, openings(*), endings(*)')
             .eq('id', animeId)
             .single();
 
         if (error) throw error;
 
-    if (anime.main_anime_id) {
-        // It's a continuation, get shared data from main
-        const { data: mainAnime, error: mainError } = await _supabase
-            .from('animes')
-            .select('name, comments, openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
-            .eq('id', anime.main_anime_id)
-            .single();
+        if (anime.main_anime_id) {
+            // It's a continuation, so its own `openings` and `endings` will be empty.
+            // We need to fetch them from the main anime.
+            const { data: mainAnime, error: mainError } = await _supabase
+                .from('animes')
+                .select('name, comments, openings(*), endings(*)')
+                .eq('id', anime.main_anime_id)
+                .single();
 
-        if (mainError) {
-            console.error(`Error fetching main anime details for ${anime.id}:`, mainError);
-            return null;
-        }
+            if (mainError) {
+                console.error(`Error fetching main anime details for ${anime.id}:`, mainError);
+                return null;
+            }
 
-        return {
-            ...anime,
-            name: mainAnime.name,
-            comments: mainAnime.comments,
-            openings: mainAnime.openings,
-            endings: mainAnime.endings,
-        };
-    } else {
-        // It's a main anime, get its own songs
-        const { data: songs, error: songError } = await _supabase
-            .from('animes')
-            .select('openings(jp_name, romaji_name, youtube_url), endings(jp_name, romaji_name, youtube_url)')
-            .eq('id', anime.id)
-            .single();
-        if (songError) {
-            console.error(`Error fetching songs for ${anime.id}:`, songError);
-            return null;
+            return {
+                ...anime,
+                name: mainAnime.name,
+                comments: mainAnime.comments,
+                openings: mainAnime.openings,
+                endings: mainAnime.endings,
+            };
+        } else {
+            // It's a main anime. The first query should have already fetched its songs.
+            return anime;
         }
-        return { ...anime, ...songs };
-    }
     } catch (error) {
         console.error('Error fetching anime details:', error);
         return null;
