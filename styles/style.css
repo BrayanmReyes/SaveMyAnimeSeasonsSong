@@ -452,28 +452,6 @@ legend {
     justify-self: end;
 }
 
-.add-entry-btn {
-    background-color: var(--action-add-color);
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    color: white;
-    border: none;
-    border-radius: 50%;
-}
-
-.add-entry-btn svg {
-    width: 18px;
-    height: 18px;
-    stroke: white;
-}
-
-.add-entry-btn:hover {
-    opacity: 0.9;
-}
 
 .delete-entry-btn:hover {
     background-color: var(--danger-color-dark);

@@ -62,9 +62,9 @@ export const createSongEntryForm = (song = {}) => {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'song-entry';
     entryDiv.innerHTML = `
-        <input type="text" class="song-jp-name" placeholder="Nombre en Japonés" value="${song.jp_name || ''}">
-        <input type="text" class="song-romaji-name" placeholder="Nombre en Romanji" value="${song.romaji_name || ''}">
-        <input type="url" class="song-youtube-url" placeholder="URL de YouTube" value="${song.youtube_url || ''}">
+        <input type="text" class="song-jp-name" placeholder="Nombre en Japonés" value="${song.jp_name}">
+        <input type="text" class="song-romaji-name" placeholder="Nombre en Romanji" value="${song.romaji_name}">
+        <input type="url" class="song-youtube-url" placeholder="URL de YouTube" value="${song.youtube_url}">
         <button type="button" class="delete-entry-btn">Eliminar</button>
     `;
     entryDiv.querySelector('.delete-entry-btn').addEventListener('click', () => {
@@ -228,6 +228,7 @@ export const closeModal = (modal) => {
 };
 
 export function prepareNewAnimeModal() {
+    DOM.addAnimeModal.classList.remove('edit-mode');
     DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
     DOM.continuationSection.style.display = 'none';
     DOM.newAnimeSection.style.display = 'block';
@@ -268,8 +269,14 @@ export function prepareContinuationModal(animes) {
 
 export function prepareEditAnimeModal(anime) {
     prepareNewAnimeModal(); // Start with a clean slate
+    DOM.addAnimeModal.classList.add('edit-mode');
 
     DOM.addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
+
+    // Ensure song sections are visible
+    DOM.openingsList.parentElement.style.display = 'block';
+    DOM.endingsList.parentElement.style.display = 'block';
+
     DOM.animeNameInput.value = anime.name;
     DOM.dayOfWeekInput.value = anime.day_of_week;
     DOM.commentsInput.value = anime.comments || '';
@@ -282,12 +289,14 @@ export function prepareEditAnimeModal(anime) {
         DOM.commentsInput.title = 'Los comentarios se heredan del anime original y no se pueden cambiar aquí.';
     }
 
+    DOM.openingsList.innerHTML = '';
     if (anime.openings) {
         anime.openings.forEach(op => {
             DOM.openingsList.appendChild(createSongEntryForm(op));
         });
     }
 
+    DOM.endingsList.innerHTML = '';
     if (anime.endings) {
         anime.endings.forEach(en => {
             DOM.endingsList.appendChild(createSongEntryForm(en));
