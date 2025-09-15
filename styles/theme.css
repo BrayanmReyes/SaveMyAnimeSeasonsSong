@@ -21,7 +21,9 @@
     --action-primary-bg: var(--primary-main);
     --action-primary-hover-bg: var(--primary-dark);
     --action-add-color: #10b981;
-    --action-edit-color: #3b82f6;
+    --action-edit-color: #8b5cf6; /* Purple */
+    --action-edit-bg-light: rgba(139, 92, 246, 0.05);
+    --action-edit-border-light: rgba(139, 92, 246, 0.2);
     --action-delete-color: #ef4444;
     --action-danger-bg: #ef4444;
     --action-danger-hover-bg: #dc2626;
@@ -53,7 +55,9 @@ body.dark-mode {
     --action-add-hover-bg: #10b981; /* Brighter green for hover */
 
     --action-add-color: #34d399;
-    --action-edit-color: #60a5fa;
+    --action-edit-color: #a78bfa; /* Lighter Purple */
+    --action-edit-bg-light: rgba(167, 139, 250, 0.08);
+    --action-edit-border-light: rgba(167, 139, 250, 0.2);
     --action-delete-color: #f87171;
 }
 

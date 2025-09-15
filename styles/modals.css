@@ -128,15 +128,21 @@
     color: var(--action-edit-color);
 }
 
+#add-anime-modal.edit-mode fieldset {
+    background-color: var(--action-edit-bg-light);
+    border: 1px solid var(--action-edit-border-light);
+}
+
 #add-anime-modal .song-entry {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr auto;
-    gap: 0.75rem;
+    /* Give more weight to the name fields, less to the URL, and let the button be auto-sized. */
+    grid-template-columns: 3fr 3fr 2fr auto;
+    gap: 1rem; /* Increased gap for better visual separation */
     align-items: center;
     background-color: var(--card-bg);
     border: 1px solid var(--border-color);
     padding: 1rem;
-    margin-bottom: 0.5rem; /* Space between entries */
+    margin-bottom: 1rem; /* Increased margin for better separation between entries */
     border-radius: 4px;
 }
 
