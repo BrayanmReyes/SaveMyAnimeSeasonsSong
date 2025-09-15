@@ -65,13 +65,20 @@
     padding: 0.85rem;
     font-size: 1.1rem;
     font-weight: 600;
-    background-color: var(--action-primary-bg);
+    background-color: var(--action-primary-bg); /* Fallback */
+    background-image: linear-gradient(to right, var(--primary-main), var(--primary-dark));
+    border: none;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .modal button#save-anime-btn:hover,
 .modal button#save-season-btn:hover,
 #login-modal button:hover {
     background-color: var(--action-primary-hover-bg);
+    background-image: linear-gradient(to right, var(--primary-dark), var(--primary-main));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 @keyframes fadeIn {
@@ -130,13 +137,13 @@
 
 #add-anime-modal.edit-mode fieldset {
     background-color: var(--action-edit-bg-light);
-    border: 1px solid var(--action-edit-border-light);
+    border: 2px solid var(--action-edit-color);
 }
 
 #add-anime-modal .song-entry {
     display: grid;
     /* Give more weight to the name fields, less to the URL, and let the button be auto-sized. */
-    grid-template-columns: auto auto 1fr auto;
+    grid-template-columns: 1fr 1fr auto;
     gap: 1rem; /* Increased gap for better visual separation */
     align-items: center;
     background-color: var(--card-bg);
@@ -177,18 +184,21 @@
     background-color: var(--action-add-color);
     border: none;
     color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
+    padding: 0.6rem 1.2rem; /* Slightly larger padding */
+    border-radius: 6px; /* Slightly more rounded */
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-weight: 500;
+    font-weight: 600; /* Bolder font */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Add shadow */
 }
 
 .add-entry-btn:hover {
     background-color: var(--action-add-hover-bg);
+    transform: translateY(-2px); /* Add hover effect */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 .add-entry-btn svg {
