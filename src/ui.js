@@ -61,15 +61,37 @@ export function showError(message) {
 export const createSongEntryForm = (song = {}) => {
     const entryDiv = document.createElement('div');
     entryDiv.className = 'song-entry';
-    entryDiv.innerHTML = `
-        <input type="text" class="song-jp-name" placeholder="Nombre en Japonés" value="${song.jp_name}">
-        <input type="text" class="song-romaji-name" placeholder="Nombre en Romanji" value="${song.romaji_name}">
-        <input type="url" class="song-youtube-url" placeholder="URL de YouTube" value="${song.youtube_url}">
-        <button type="button" class="delete-entry-btn">Eliminar</button>
-    `;
-    entryDiv.querySelector('.delete-entry-btn').addEventListener('click', () => {
+
+    const jpNameInput = document.createElement('input');
+    jpNameInput.type = 'text';
+    jpNameInput.className = 'song-jp-name';
+    jpNameInput.placeholder = 'Nombre en Japonés';
+    jpNameInput.value = song.jp_name || '';
+    entryDiv.appendChild(jpNameInput);
+
+    const romajiNameInput = document.createElement('input');
+    romajiNameInput.type = 'text';
+    romajiNameInput.className = 'song-romaji-name';
+    romajiNameInput.placeholder = 'Nombre en Romanji';
+    romajiNameInput.value = song.romaji_name || '';
+    entryDiv.appendChild(romajiNameInput);
+
+    const youtubeUrlInput = document.createElement('input');
+    youtubeUrlInput.type = 'url';
+    youtubeUrlInput.className = 'song-youtube-url';
+    youtubeUrlInput.placeholder = 'URL de YouTube';
+    youtubeUrlInput.value = song.youtube_url || '';
+    entryDiv.appendChild(youtubeUrlInput);
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.type = 'button';
+    deleteBtn.className = 'delete-entry-btn';
+    deleteBtn.textContent = 'Eliminar';
+    deleteBtn.addEventListener('click', () => {
         entryDiv.remove();
     });
+    entryDiv.appendChild(deleteBtn);
+
     return entryDiv;
 };
 
