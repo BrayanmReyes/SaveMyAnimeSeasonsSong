@@ -140,6 +140,20 @@
     border: 2px solid var(--action-edit-color);
 }
 
+/* Add Mode styles */
+#add-anime-modal:not(.edit-mode) .modal-content {
+    border-top: 4px solid var(--primary-main);
+}
+
+#add-anime-modal:not(.edit-mode) h2 {
+    color: var(--primary-main);
+}
+
+#add-anime-modal:not(.edit-mode) fieldset {
+    background-color: var(--action-add-bg-light);
+    border: 2px solid var(--action-add-border-color);
+}
+
 #add-anime-modal .song-entry {
     display: grid;
     /* Give more weight to the name fields, less to the URL, and let the button be auto-sized. */
