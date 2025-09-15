@@ -155,9 +155,8 @@
 }
 
 #add-anime-modal .song-entry {
-    display: grid;
-    /* Give more weight to the name fields, less to the URL, and let the button be auto-sized. */
-    grid-template-columns: 1fr 1fr auto;
+    display: flex;
+    flex-wrap: wrap;
     gap: 1rem; /* Increased gap for better visual separation */
     align-items: center;
     background-color: var(--card-bg);
@@ -176,8 +175,9 @@
 
 #add-anime-modal .song-entry input {
     margin-bottom: 0; /* Override default margin */
-    width: 100%; /* Ensure inputs fill the grid cell */
+    width: auto; /* Unset width to allow flex to control it */
     box-sizing: border-box; /* Include padding and border in the element's total width and height */
+    flex: 1 1 200px; /* Allow shrinking and growing from a 200px base */
 }
 
 #add-anime-modal .song-entry .delete-entry-btn {
