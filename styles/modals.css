@@ -136,7 +136,7 @@
 #add-anime-modal .song-entry {
     display: grid;
     /* Give more weight to the name fields, less to the URL, and let the button be auto-sized. */
-    grid-template-columns: 3fr 3fr 2fr auto;
+    grid-template-columns: 1fr 1fr 1fr auto;
     gap: 1rem; /* Increased gap for better visual separation */
     align-items: center;
     background-color: var(--card-bg);
