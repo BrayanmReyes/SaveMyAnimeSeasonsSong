@@ -149,6 +149,8 @@
 
 #add-anime-modal .song-entry input {
     margin-bottom: 0; /* Override default margin */
+    width: 100%; /* Ensure inputs fill the grid cell */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
 }
 
 #add-anime-modal .song-entry .delete-entry-btn {
