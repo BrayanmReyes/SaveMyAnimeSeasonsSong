@@ -1,3 +1,5 @@
+import { getSeasons } from './api.js';
+
 export const pencilIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>`;
 export const trashIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>`;
 export const youtubeIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>`;
@@ -23,6 +25,8 @@ export const DOM = {
     saveSeasonBtn: document.getElementById('save-season-btn'),
     newAnimeSection: document.getElementById('new-anime-section'),
     animeNameInput: document.getElementById('anime-name-input'),
+    editSeasonSection: document.getElementById('edit-season-section'),
+    animeSeasonSelect: document.getElementById('anime-season-select'),
     continuationSection: document.getElementById('continuation-section'),
     continuationSelect: document.getElementById('continuation-select'),
     dayOfWeekInput: document.getElementById('day-of-week-input'),
@@ -253,6 +257,7 @@ export function prepareNewAnimeModal() {
     DOM.addAnimeModal.classList.remove('edit-mode');
     DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
     DOM.continuationSection.style.display = 'none';
+    DOM.editSeasonSection.style.display = 'none';
     DOM.newAnimeSection.style.display = 'block';
     DOM.openingsList.parentElement.style.display = 'block';
     DOM.endingsList.parentElement.style.display = 'block';
@@ -289,11 +294,25 @@ export function prepareContinuationModal(animes) {
     });
 }
 
-export function prepareEditAnimeModal(anime) {
+export async function prepareEditAnimeModal(anime) {
     prepareNewAnimeModal(); // Start with a clean slate
     DOM.addAnimeModal.classList.add('edit-mode');
 
     DOM.addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
+
+    // --- Season Selector ---
+    DOM.editSeasonSection.style.display = 'block';
+    const seasons = await getSeasons();
+    const select = DOM.animeSeasonSelect;
+    select.innerHTML = '';
+    seasons.forEach(season => {
+        const option = document.createElement('option');
+        option.value = season.id;
+        option.textContent = season.name;
+        select.appendChild(option);
+    });
+    select.value = anime.season_id;
+    // --- End Season Selector ---
 
     // Ensure song sections are visible
     DOM.openingsList.parentElement.style.display = 'block';
@@ -306,9 +325,15 @@ export function prepareEditAnimeModal(anime) {
     const isContinuation = !!anime.main_anime_id;
     DOM.animeNameInput.readOnly = isContinuation;
     DOM.commentsInput.readOnly = isContinuation;
-     if(isContinuation) {
+    if (isContinuation) {
         DOM.animeNameInput.title = 'El nombre se hereda del anime original y no se puede cambiar aquí.';
         DOM.commentsInput.title = 'Los comentarios se heredan del anime original y no se pueden cambiar aquí.';
+        // Also disable season change for continuations as it might be confusing
+        select.disabled = true;
+        DOM.editSeasonSection.title = 'La temporada de una continuación no se puede cambiar directamente.';
+    } else {
+        select.disabled = false;
+        DOM.editSeasonSection.title = '';
     }
 
     DOM.openingsList.innerHTML = '';
