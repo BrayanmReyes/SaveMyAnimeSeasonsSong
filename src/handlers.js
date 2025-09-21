@@ -117,7 +117,7 @@ export async function handleSaveAnime() {
             name: name,
             day_of_week: ui.DOM.dayOfWeekInput.value,
             comments: ui.DOM.commentsInput.value.trim(),
-            season_id: currentSeasonId
+            season_id: editingAnimeId ? parseInt(ui.DOM.animeSeasonSelect.value) : currentSeasonId,
         };
 
         const openings = ui.getSongEntries(ui.DOM.openingsList);
@@ -183,7 +183,7 @@ async function handleEditAnime(animeId) {
     const anime = await api.getAnimeDetails(animeId);
     if (anime) {
         setState({ editingAnimeId: anime.id });
-        ui.prepareEditAnimeModal(anime);
+        await ui.prepareEditAnimeModal(anime);
         ui.openModal(ui.DOM.addAnimeModal);
     }
 }
