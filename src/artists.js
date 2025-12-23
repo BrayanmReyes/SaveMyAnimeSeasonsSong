@@ -1,8 +1,19 @@
 import * as api from './api.js';
 import { youtubeIcon } from './ui.js';
 
-const renderSongList = (songs, artistName, container) => {
+const renderSongList = (songs, artistName, container, onBack) => {
     container.innerHTML = ''; // Clear artist list
+
+    if (onBack) {
+        const backBtn = document.createElement('button');
+        backBtn.className = 'back-to-artists-btn';
+        backBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Volver a Artistas
+        `;
+        backBtn.addEventListener('click', onBack);
+        container.appendChild(backBtn);
+    }
 
     const title = document.createElement('h2');
     title.textContent = `Canciones por ${artistName}`;
@@ -71,7 +82,7 @@ export const renderArtistList = (artists, container) => {
 
         card.addEventListener('click', async () => {
             const songs = await api.getSongsByArtist(artistName);
-            renderSongList(songs, artistName, container);
+            renderSongList(songs, artistName, container, () => renderArtistList(artists, container));
         });
         artistList.appendChild(card);
     });
