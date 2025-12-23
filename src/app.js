@@ -82,7 +82,6 @@ function setupEventListeners() {
     ui.DOM.themeToggle.addEventListener('click', handlers.handleThemeToggle);
     ui.DOM.scrollToTopBtn.addEventListener('click', handlers.handleScrollToTop);
 
-    ui.DOM.artistsBtn.addEventListener('click', handlers.showArtistsView);
     ui.DOM.mainTitle.addEventListener('click', handlers.showSeasonsView);
 
     ui.DOM.animeSearchInput.addEventListener('input', handlers.handleAnimeSearch);

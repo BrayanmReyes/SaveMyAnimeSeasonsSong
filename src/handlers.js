@@ -1,7 +1,6 @@
 import * as api from './api.js';
 import * as ui from './ui.js';
 import { getState, setState } from './state.js';
-import { renderArtistList } from './artists.js';
 import { reloadSeasons } from './app.js';
 
 export async function handleSeasonChange(e) {
@@ -240,18 +239,7 @@ export function handleScrollToTop() {
 export function showSeasonsView() {
     ui.DOM.seasonManager.style.display = 'flex';
     ui.DOM.animeListContainer.style.display = 'block';
-    ui.DOM.artistViewContainer.style.display = 'none';
     ui.DOM.addAnimeBtn.style.display = 'flex';
-}
-
-export async function showArtistsView() {
-    ui.DOM.seasonManager.style.display = 'none';
-    ui.DOM.animeListContainer.style.display = 'none';
-    ui.DOM.artistViewContainer.style.display = 'block';
-    ui.DOM.addAnimeBtn.style.display = 'none';
-
-    const artists = await api.getArtistsWithCounts();
-    renderArtistList(artists, ui.DOM.artistViewContainer);
 }
 
 let searchTimeout;
