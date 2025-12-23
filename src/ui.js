@@ -14,8 +14,6 @@ export const DOM = {
     editSeasonBtn: document.getElementById('edit-season-btn'),
     deleteSeasonBtn: document.getElementById('delete-season-btn'),
     animeListContainer: document.getElementById('anime-list-container'),
-    artistViewContainer: document.getElementById('artist-view-container'),
-    artistsBtn: document.getElementById('artists-btn'),
     animeSearchInput: document.getElementById('anime-search-input'),
     addAnimeBtn: document.getElementById('add-anime-btn'),
     addSeasonModal: document.getElementById('add-season-modal'),
