@@ -47,15 +47,33 @@ export const renderArtistList = (artists, container) => {
     const artistList = document.createElement('div');
     artistList.className = 'artist-grid'; // Use a grid for artists
 
-    artists.forEach(artistName => {
-        const button = document.createElement('button');
-        button.className = 'artist-button';
-        button.textContent = artistName;
-        button.addEventListener('click', async () => {
+    artists.forEach(artistObj => {
+        // artistObj is expected to be { name: '...', count: N }
+        // Handle backward compatibility just in case (if it's a string)
+        const artistName = typeof artistObj === 'string' ? artistObj : artistObj.name;
+        const count = typeof artistObj === 'string' ? '?' : artistObj.count;
+
+        const card = document.createElement('div');
+        card.className = 'artist-card';
+        card.setAttribute('title', artistName); // Tooltip for truncated text
+
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'artist-name';
+        nameSpan.textContent = artistName;
+
+        const countBadge = document.createElement('span');
+        countBadge.className = 'artist-count-badge';
+        countBadge.textContent = count;
+        countBadge.title = `${count} canciones`;
+
+        card.appendChild(nameSpan);
+        card.appendChild(countBadge);
+
+        card.addEventListener('click', async () => {
             const songs = await api.getSongsByArtist(artistName);
             renderSongList(songs, artistName, container);
         });
-        artistList.appendChild(button);
+        artistList.appendChild(card);
     });
 
     container.appendChild(artistList);
