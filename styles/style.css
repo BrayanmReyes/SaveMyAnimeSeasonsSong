@@ -564,9 +564,58 @@ legend {
 .artist-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
+    gap: 1.5rem; /* Increased gap */
 }
 
+.artist-card {
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 1.5rem;
+    border-radius: 12px; /* Nicer rounded corners */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    box-shadow: 0 2px 4px var(--shadow-color);
+    overflow: hidden; /* Ensure content stays inside */
+    position: relative;
+    text-align: center;
+}
+
+.artist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px var(--shadow-color);
+    border-color: var(--primary-main);
+}
+
+.artist-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+
+.artist-count-badge {
+    background-color: var(--primary-main);
+    color: white;
+    font-size: 0.9rem;
+    font-weight: bold;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Maintain compatibility if .artist-button is still used elsewhere or during transition */
 .artist-button {
     background-color: var(--card-bg);
     color: var(--text-color);
@@ -575,12 +624,6 @@ legend {
     text-align: center;
     font-weight: 500;
     transition: background-color 0.2s, transform 0.2s;
-}
-
-.artist-button:hover {
-    background-color: var(--background-color);
-    transform: translateY(-2px);
-    border-color: var(--primary-main);
 }
 
 /* Animations */

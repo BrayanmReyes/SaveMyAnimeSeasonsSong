@@ -250,7 +250,7 @@ export async function showArtistsView() {
     ui.DOM.artistViewContainer.style.display = 'block';
     ui.DOM.addAnimeBtn.style.display = 'none';
 
-    const artists = await api.getAllArtists();
+    const artists = await api.getArtistsWithCounts();
     renderArtistList(artists, ui.DOM.artistViewContainer);
 }
 

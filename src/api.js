@@ -174,6 +174,37 @@ export const getAllArtists = async () => {
     return data.map(item => item.artist_name);
 };
 
+export const getArtistsWithCounts = async () => {
+    const { data: openings, error: err1 } = await _supabase.from('openings').select('jp_name, romaji_name');
+    const { data: endings, error: err2 } = await _supabase.from('endings').select('jp_name, romaji_name');
+
+    if (err1 || err2) {
+        console.error("Error fetching songs for counting", err1, err2);
+        return [];
+    }
+
+    const artistCounts = {};
+    const processSong = (song) => {
+        // Try romaji first, then jp? The app seems to display romaji.
+        const name = song.romaji_name || song.jp_name || "";
+        const parts = name.split(' by ');
+        if (parts.length > 1) {
+            const artist = parts[1].trim(); // Take the part after 'by'
+            if (artist) {
+                artistCounts[artist] = (artistCounts[artist] || 0) + 1;
+            }
+        }
+    };
+
+    openings.forEach(processSong);
+    endings.forEach(processSong);
+
+    // Convert to array and sort
+    return Object.entries(artistCounts)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+};
+
 export const getContinuableAnimes = async () => {
     const { data, error } = await _supabase
         .from('animes')
