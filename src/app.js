@@ -58,7 +58,8 @@ export async function reloadSeasons() {
 }
 
 function setupEventListeners() {
-    ui.DOM.seasonSelector.addEventListener('change', handlers.handleSeasonChange);
+    ui.DOM.seasonYearSelector.addEventListener('change', handlers.handleYearChange);
+    ui.DOM.seasonNameSelector.addEventListener('change', handlers.handleSeasonChange);
     ui.DOM.addSeasonBtn.addEventListener('click', handlers.handleAddSeason);
     ui.DOM.editSeasonBtn.addEventListener('click', handlers.handleEditSeason);
     ui.DOM.deleteSeasonBtn.addEventListener('click', handlers.handleDeleteSeason);

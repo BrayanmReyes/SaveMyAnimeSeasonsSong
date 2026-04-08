@@ -13,10 +13,37 @@ export async function handleSeasonChange(e) {
     }
 }
 
+export function handleYearChange(e) {
+    const year = e.target.value;
+    ui.updateSeasonNameOptions(year);
+    // Automatically trigger change to load first season of that year
+    const firstSeasonOption = ui.DOM.seasonNameSelector.querySelector('option');
+    if (firstSeasonOption && firstSeasonOption.value) {
+        ui.DOM.seasonNameSelector.value = firstSeasonOption.value;
+        const event = new Event('change');
+        ui.DOM.seasonNameSelector.dispatchEvent(event);
+    }
+}
+
+const populateModalYearSelect = () => {
+    ui.DOM.modalSeasonYear.innerHTML = '';
+    const currentYear = new Date().getFullYear();
+    for (let y = currentYear - 5; y <= currentYear + 2; y++) {
+        const option = document.createElement('option');
+        option.value = y;
+        option.textContent = y;
+        ui.DOM.modalSeasonYear.appendChild(option);
+    }
+};
+
 export function handleAddSeason() {
     setState({ editingSeasonId: null });
     ui.DOM.addSeasonModal.querySelector('h2').textContent = 'Nueva Temporada';
-    ui.DOM.seasonNameInput.value = '';
+
+    populateModalYearSelect();
+    ui.DOM.modalSeasonYear.value = new Date().getFullYear();
+    ui.DOM.modalSeasonName.value = 'Winter';
+
     ui.openModal(ui.DOM.addSeasonModal);
 }
 
@@ -25,10 +52,39 @@ export function handleEditSeason() {
     if (!currentSeasonId) return ui.showError('No hay ninguna temporada seleccionada para editar.');
 
     setState({ editingSeasonId: currentSeasonId });
-    const seasonName = ui.DOM.seasonSelector.options[ui.DOM.seasonSelector.selectedIndex].text;
+
+    // Find full name from window.allSeasons or DOM
+    let fullSeasonName = '';
+    if (window.allSeasons) {
+        const season = window.allSeasons.find(s => s.id == currentSeasonId);
+        if (season) fullSeasonName = season.name;
+    }
 
     ui.DOM.addSeasonModal.querySelector('h2').textContent = 'Editar Temporada';
-    ui.DOM.seasonNameInput.value = seasonName;
+
+    populateModalYearSelect();
+    const parts = fullSeasonName.split(' ');
+    if (parts.length >= 2) {
+        const year = parts.pop();
+        const season = parts.join(' ');
+
+        // Ensure year is in dropdown
+        let yearExists = Array.from(ui.DOM.modalSeasonYear.options).some(opt => opt.value == year);
+        if (!yearExists) {
+            const option = document.createElement('option');
+            option.value = year;
+            option.textContent = year;
+            ui.DOM.modalSeasonYear.appendChild(option);
+        }
+
+        ui.DOM.modalSeasonYear.value = year;
+
+        // Try to select season if it matches the fixed values
+        if (Array.from(ui.DOM.modalSeasonName.options).some(opt => opt.value === season)) {
+            ui.DOM.modalSeasonName.value = season;
+        }
+    }
+
     ui.openModal(ui.DOM.addSeasonModal);
 }
 
@@ -48,7 +104,10 @@ export async function handleDeleteSeason() {
 
 export async function handleSaveSeason() {
     const { editingSeasonId } = getState();
-    const name = ui.DOM.seasonNameInput.value.trim();
+    const seasonName = ui.DOM.modalSeasonName.value;
+    const seasonYear = ui.DOM.modalSeasonYear.value;
+    const name = `${seasonName} ${seasonYear}`;
+
     if (name) {
         let success;
         if (editingSeasonId) {
@@ -58,7 +117,6 @@ export async function handleSaveSeason() {
         }
 
         if (success) {
-            ui.DOM.seasonNameInput.value = '';
             ui.closeModal(ui.DOM.addSeasonModal);
             setState({ editingSeasonId: null });
             reloadSeasons();
