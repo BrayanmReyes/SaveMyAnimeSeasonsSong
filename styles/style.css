@@ -714,6 +714,7 @@ legend {
     background-color: var(--primary-dark);
 }
 
+
 .season-selectors {
     display: flex;
     flex-grow: 1;
@@ -722,6 +723,37 @@ legend {
 
 .season-selectors select {
     flex: 1;
+    /* Modernize selects slightly */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23ffffff" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    padding-right: 30px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.season-selectors select:hover {
+    border-color: var(--primary-main);
+}
+
+.season-selectors select:focus {
+    outline: none;
+    border-color: var(--primary-main);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+/* To handle the modern select background arrow for light/dark themes */
+body:not(.dark-mode) .season-selectors select {
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23333333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>');
 }
 
 @media (max-width: 768px) {
