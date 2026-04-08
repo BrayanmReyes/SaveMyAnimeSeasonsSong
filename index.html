@@ -35,7 +35,10 @@
         <div id="error-toast" class="error-toast"></div>
         <section id="season-manager">
             <h2>Temporadas</h2>
-            <select id="season-selector"></select>
+            <div class="season-selectors">
+                <select id="season-year-selector"></select>
+                <select id="season-name-selector"></select>
+            </div>
             <div class="season-actions">
                 <button id="add-season-btn" title="Nueva Temporada">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -67,7 +70,15 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2>Nueva Temporada</h2>
-            <input type="text" id="season-name-input" placeholder="Nombre de la temporada (ej. Verano 2024)">
+            <div class="form-group season-modal-inputs" style="display: flex; gap: 1rem; margin-bottom: 1rem;">
+                <select id="modal-season-name">
+                    <option value="Winter">Winter</option>
+                    <option value="Spring">Spring</option>
+                    <option value="Summer">Summer</option>
+                    <option value="Fall">Fall</option>
+                </select>
+                <select id="modal-season-year"></select>
+            </div>
             <button id="save-season-btn">Guardar</button>
         </div>
     </div>

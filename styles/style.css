@@ -713,3 +713,19 @@ legend {
 ::-webkit-scrollbar-thumb:hover {
     background-color: var(--primary-dark);
 }
+
+.season-selectors {
+    display: flex;
+    flex-grow: 1;
+    gap: 0.5rem;
+}
+
+.season-selectors select {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .season-selectors {
+        flex-direction: row; /* Keep them side by side even on mobile if possible, or column if preferred */
+    }
+}

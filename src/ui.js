@@ -7,7 +7,8 @@ export const linkIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="16" heig
 
 export const DOM = {
     mainTitle: document.querySelector('header h1'),
-    seasonSelector: document.getElementById('season-selector'),
+    seasonYearSelector: document.getElementById('season-year-selector'),
+    seasonNameSelector: document.getElementById('season-name-selector'),
     seasonManager: document.getElementById('season-manager'),
     addSeasonBtn: document.getElementById('add-season-btn'),
     addContinuationBtn: document.getElementById('add-continuation-btn'),
@@ -19,7 +20,8 @@ export const DOM = {
     addSeasonModal: document.getElementById('add-season-modal'),
     addAnimeModal: document.getElementById('add-anime-modal'),
     closeBtns: document.querySelectorAll('.close-btn'),
-    seasonNameInput: document.getElementById('season-name-input'),
+    modalSeasonName: document.getElementById('modal-season-name'),
+    modalSeasonYear: document.getElementById('modal-season-year'),
     saveSeasonBtn: document.getElementById('save-season-btn'),
     newAnimeSection: document.getElementById('new-anime-section'),
     animeNameInput: document.getElementById('anime-name-input'),
@@ -206,19 +208,78 @@ export const renderAnimes = (animes, options = {}) => {
 };
 
 export const renderSeasons = (seasons, currentSeasonId) => {
-    DOM.seasonSelector.innerHTML = '';
+    window.allSeasons = seasons; // Store for handlers to use
+    DOM.seasonYearSelector.innerHTML = '';
+    DOM.seasonNameSelector.innerHTML = '';
+
     if (seasons.length === 0) {
-        DOM.seasonSelector.innerHTML = '<option>No hay temporadas</option>';
-    } else {
-        seasons.forEach(season => {
-            const option = document.createElement('option');
-            option.value = season.id;
-            option.textContent = season.name;
-            DOM.seasonSelector.appendChild(option);
-        });
-        if (currentSeasonId) {
-            DOM.seasonSelector.value = currentSeasonId;
+        DOM.seasonYearSelector.innerHTML = '<option>No hay años</option>';
+        DOM.seasonNameSelector.innerHTML = '<option>No hay temporadas</option>';
+        return;
+    }
+
+    const years = new Set();
+    let currentYear = null;
+    let currentSeasonMatch = null;
+
+    seasons.forEach(season => {
+        const parts = season.name.split(' ');
+        if (parts.length >= 2) {
+            const year = parts[parts.length - 1];
+            years.add(year);
+            if (currentSeasonId && season.id == currentSeasonId) {
+                currentYear = year;
+                currentSeasonMatch = season.name;
+            }
         }
+    });
+
+    const sortedYears = Array.from(years).sort((a, b) => b.localeCompare(a));
+
+    if (sortedYears.length === 0) {
+         DOM.seasonYearSelector.innerHTML = '<option>No hay años</option>';
+         DOM.seasonNameSelector.innerHTML = '<option>No hay temporadas</option>';
+         return;
+    }
+
+    if (!currentYear && sortedYears.length > 0) {
+        currentYear = sortedYears[0];
+    }
+
+    sortedYears.forEach(year => {
+        const option = document.createElement('option');
+        option.value = year;
+        option.textContent = year;
+        DOM.seasonYearSelector.appendChild(option);
+    });
+
+    DOM.seasonYearSelector.value = currentYear;
+
+    updateSeasonNameOptions(currentYear, currentSeasonMatch ? currentSeasonId : null);
+};
+
+export const updateSeasonNameOptions = (year, selectedSeasonId = null) => {
+    DOM.seasonNameSelector.innerHTML = '';
+    if (!window.allSeasons) return;
+
+    const seasonsForYear = window.allSeasons.filter(season => season.name.endsWith(` ${year}`));
+
+    if (seasonsForYear.length === 0) {
+        DOM.seasonNameSelector.innerHTML = '<option value="">No hay temporadas</option>';
+        return;
+    }
+
+    seasonsForYear.forEach(season => {
+        const option = document.createElement('option');
+        option.value = season.id;
+        // The name might be "Winter 2024", we could just display "Winter" here
+        const seasonPart = season.name.split(' ').slice(0, -1).join(' ');
+        option.textContent = seasonPart || season.name;
+        DOM.seasonNameSelector.appendChild(option);
+    });
+
+    if (selectedSeasonId) {
+        DOM.seasonNameSelector.value = selectedSeasonId;
     }
 };
 
@@ -303,12 +364,30 @@ export async function prepareEditAnimeModal(anime) {
     const seasons = await getSeasons();
     const select = DOM.animeSeasonSelect;
     select.innerHTML = '';
+
+    // Group seasons by year
+    const seasonsByYear = {};
     seasons.forEach(season => {
-        const option = document.createElement('option');
-        option.value = season.id;
-        option.textContent = season.name;
-        select.appendChild(option);
+        const parts = season.name.split(' ');
+        const year = parts.length >= 2 ? parts[parts.length - 1] : 'Otros';
+        if (!seasonsByYear[year]) seasonsByYear[year] = [];
+        seasonsByYear[year].push(season);
     });
+
+    const sortedYears = Object.keys(seasonsByYear).sort((a, b) => b.localeCompare(a));
+    sortedYears.forEach(year => {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = year;
+        seasonsByYear[year].forEach(season => {
+            const option = document.createElement('option');
+            option.value = season.id;
+            const seasonPart = season.name.split(' ').slice(0, -1).join(' ');
+            option.textContent = seasonPart || season.name;
+            optgroup.appendChild(option);
+        });
+        select.appendChild(optgroup);
+    });
+
     select.value = anime.season_id;
     // --- End Season Selector ---
 
