@@ -269,13 +269,21 @@ export const updateSeasonNameOptions = (year, selectedSeasonId = null) => {
         return;
     }
 
+    const seenSeasons = new Set();
+
     seasonsForYear.forEach(season => {
-        const option = document.createElement('option');
-        option.value = season.id;
         // The name might be "Winter 2024", we could just display "Winter" here
         const seasonPart = season.name.split(' ').slice(0, -1).join(' ');
-        option.textContent = seasonPart || season.name;
-        DOM.seasonNameSelector.appendChild(option);
+        const displayName = seasonPart || season.name;
+
+        // Deduplicate
+        if (!seenSeasons.has(displayName)) {
+            seenSeasons.add(displayName);
+            const option = document.createElement('option');
+            option.value = season.id;
+            option.textContent = displayName;
+            DOM.seasonNameSelector.appendChild(option);
+        }
     });
 
     if (selectedSeasonId) {
