@@ -2,8 +2,8 @@ name: Supabase Keep Alive
 
 on:
   schedule:
-    # Run at 00:00 every 3 days
-    - cron: '0 0 */3 * *'
+    # Run at 00:00 every day
+    - cron: '0 0 * * *'
   # Allow manual triggering
   workflow_dispatch:
 
@@ -17,6 +17,13 @@ jobs:
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           # Fetching seasons data via REST API to simulate activity
-          curl -s -X GET "${SUPABASE_URL}/rest/v1/seasons?select=*&limit=1" \
+          response=$(curl -s -w "%{http_code}" -o /dev/null -X GET "${SUPABASE_URL}/rest/v1/seasons?select=*&limit=1" \
             -H "apikey: ${SUPABASE_ANON_KEY}" \
-            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}"
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
+
+          if [ "$response" -eq 200 ]; then
+            echo "Supabase pinged successfully! Status: $response"
+          else
+            echo "Failed to ping Supabase. Status: $response"
+            exit 1
+          fi
