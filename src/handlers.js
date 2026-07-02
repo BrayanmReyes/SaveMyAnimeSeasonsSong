@@ -153,7 +153,35 @@ export async function handleSaveAnime() {
     const { isContinuationMode, editingAnimeId, currentSeasonId } = getState();
     let success;
 
-    if (isContinuationMode) {
+    const isBatchMode = !isContinuationMode && !editingAnimeId && document.querySelector('input[name="anime-input-mode"][value="batch"]')?.checked;
+
+    if (isBatchMode) {
+        const batchText = ui.DOM.animeBatchInput.value;
+        if (!batchText.trim()) return ui.showError('La lista de animes está vacía.');
+
+        const lines = batchText.split('\n');
+        const animesToInsert = [];
+        const season_id = currentSeasonId;
+        const day_of_week = ui.DOM.dayOfWeekInput.value;
+
+        for (let line of lines) {
+            let name = line.trim();
+            // Remove common bullet points
+            name = name.replace(/^[•\-\*\[\]]\s*/, '').trim();
+            if (name) {
+                animesToInsert.push({
+                    name: name,
+                    day_of_week: day_of_week,
+                    comments: '',
+                    season_id: season_id
+                });
+            }
+        }
+
+        if (animesToInsert.length === 0) return ui.showError('No se encontraron nombres válidos en la lista.');
+
+        success = await api.addAnimesBatch(animesToInsert);
+    } else if (isContinuationMode) {
         const main_anime_id = parseInt(ui.DOM.continuationSelect.value);
         if (!main_anime_id) return ui.showError('Por favor, selecciona un anime para continuar.');
 
