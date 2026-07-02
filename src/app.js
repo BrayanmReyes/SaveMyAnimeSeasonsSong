@@ -73,26 +73,6 @@ function setupEventListeners() {
 
     ui.DOM.closeBtns.forEach(btn => btn.addEventListener('click', handlers.handleModalClose));
 
-    if (ui.DOM.inputModeRadios) {
-        ui.DOM.inputModeRadios.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                if (e.target.value === 'batch') {
-                    ui.DOM.individualInputSection.style.display = 'none';
-                    ui.DOM.batchInputSection.style.display = 'block';
-                    ui.DOM.openingsList.parentElement.style.display = 'none';
-                    ui.DOM.endingsList.parentElement.style.display = 'none';
-                    ui.DOM.commentsInput.style.display = 'none';
-                } else {
-                    ui.DOM.individualInputSection.style.display = 'block';
-                    ui.DOM.batchInputSection.style.display = 'none';
-                    ui.DOM.openingsList.parentElement.style.display = 'block';
-                    ui.DOM.endingsList.parentElement.style.display = 'block';
-                    ui.DOM.commentsInput.style.display = 'block';
-                }
-            });
-        });
-    }
-
     ui.DOM.addOpeningBtn.addEventListener('click', () => ui.addSongEntry(ui.DOM.openingsList));
     ui.DOM.addEndingBtn.addEventListener('click', () => ui.addSongEntry(ui.DOM.endingsList));
 

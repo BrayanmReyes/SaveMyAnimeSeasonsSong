@@ -24,10 +24,6 @@ export const DOM = {
     modalSeasonYear: document.getElementById('modal-season-year'),
     saveSeasonBtn: document.getElementById('save-season-btn'),
     newAnimeSection: document.getElementById('new-anime-section'),
-    inputModeRadios: document.querySelectorAll('input[name="anime-input-mode"]'),
-    individualInputSection: document.getElementById('individual-input-section'),
-    batchInputSection: document.getElementById('batch-input-section'),
-    animeBatchInput: document.getElementById('anime-batch-input'),
     animeNameInput: document.getElementById('anime-name-input'),
     editSeasonSection: document.getElementById('edit-season-section'),
     animeSeasonSelect: document.getElementById('anime-season-select'),
@@ -325,20 +321,6 @@ export const closeModal = (modal) => {
 };
 
 export function prepareNewAnimeModal() {
-    // Reset batch mode toggle
-    const individualRadio = document.querySelector('input[name="anime-input-mode"][value="individual"]');
-    if (individualRadio) individualRadio.checked = true;
-    if (DOM.individualInputSection) DOM.individualInputSection.style.display = 'block';
-    if (DOM.batchInputSection) DOM.batchInputSection.style.display = 'none';
-    if (DOM.animeBatchInput) DOM.animeBatchInput.value = '';
-    const toggleContainer = document.querySelector('.input-mode-toggle');
-    if (toggleContainer) toggleContainer.style.display = 'flex';
-
-    // Ensure standard inputs are visible when resetting
-    if (DOM.openingsList && DOM.openingsList.parentElement) DOM.openingsList.parentElement.style.display = 'block';
-    if (DOM.endingsList && DOM.endingsList.parentElement) DOM.endingsList.parentElement.style.display = 'block';
-    if (DOM.commentsInput) DOM.commentsInput.style.display = 'block';
-
     DOM.addAnimeModal.classList.remove('edit-mode');
     DOM.addAnimeModal.querySelector('h2').textContent = 'Agregar Anime';
     DOM.continuationSection.style.display = 'none';
@@ -380,10 +362,6 @@ export function prepareContinuationModal(animes) {
 }
 
 export async function prepareEditAnimeModal(anime) {
-    prepareNewAnimeModal(); // Start with a clean slate
-    const toggleContainer = document.querySelector('.input-mode-toggle');
-    if (toggleContainer) toggleContainer.style.display = 'none';
-
     prepareNewAnimeModal(); // Start with a clean slate
     DOM.addAnimeModal.classList.add('edit-mode');
 

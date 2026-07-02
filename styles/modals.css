@@ -19,7 +19,7 @@
 .modal-content {
     background-color: var(--card-bg);
     padding: 2rem;
-    border-radius: var(--card-radius);
+    border-radius: 8px;
     width: 100%;
     max-width: 600px;
     position: relative;
@@ -65,11 +65,10 @@
     padding: 0.85rem;
     font-size: 1.1rem;
     font-weight: 600;
-    background-color: var(--action-primary-bg);
+    background-color: var(--action-primary-bg); /* Fallback */
     background-image: linear-gradient(to right, var(--primary-main), var(--primary-dark));
     border: none;
-    border-radius: var(--button-radius);
-    box-shadow: var(--glow-shadow);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
     transition: transform 0.2s, box-shadow 0.2s;
 }
 
@@ -79,7 +78,7 @@
     background-color: var(--action-primary-hover-bg);
     background-image: linear-gradient(to right, var(--primary-dark), var(--primary-main));
     transform: translateY(-2px);
-    box-shadow: var(--glow-shadow-hover);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
 @keyframes fadeIn {
@@ -117,7 +116,7 @@
 #add-anime-modal fieldset {
     background-color: var(--song-item-odd-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--input-radius);
+    border-radius: 6px;
     padding: 1rem 1.5rem;
     margin-bottom: 1.5rem;
 }
@@ -164,7 +163,7 @@
     border: 1px solid var(--border-color);
     padding: 1rem;
     margin-bottom: 1rem; /* Increased margin for better separation between entries */
-    border-radius: var(--input-radius);
+    border-radius: 4px;
 }
 
 /* Let's remove the debugging border now */
@@ -186,7 +185,7 @@
     color: white;
     border: none;
     padding: 0.5rem 0.75rem;
-    border-radius: var(--input-radius);
+    border-radius: 4px;
     cursor: pointer;
     justify-self: end;
     transition: background-color 0.2s;
@@ -200,7 +199,7 @@
     border: none;
     color: white;
     padding: 0.6rem 1.2rem; /* Slightly larger padding */
-    border-radius: var(--input-radius); /* Slightly more rounded */
+    border-radius: 6px; /* Slightly more rounded */
     cursor: pointer;
     transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
     display: inline-flex;
