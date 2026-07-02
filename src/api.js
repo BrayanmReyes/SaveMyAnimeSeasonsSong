@@ -349,14 +349,3 @@ export const deleteAnime = async (id) => {
         return { success: false, message: error.message };
     }
 };
-
-export const addAnimesBatch = async (animesData) => {
-    try {
-        const { error } = await _supabase.from('animes').insert(animesData);
-        if (error) throw error;
-        return true;
-    } catch (error) {
-        console.error('Error in addAnimesBatch:', error);
-        return false;
-    }
-};

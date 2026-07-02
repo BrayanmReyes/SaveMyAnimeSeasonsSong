@@ -97,17 +97,7 @@
                 <select id="continuation-select"></select>
             </div>
             <div id="new-anime-section">
-                <div class="input-mode-toggle" style="margin-bottom: 1rem; display: flex; gap: 1rem; align-items: center; justify-content: center;">
-                    <label style="cursor: pointer;"><input type="radio" name="anime-input-mode" value="individual" checked> Individual</label>
-                    <label style="cursor: pointer;"><input type="radio" name="anime-input-mode" value="batch"> Por Lote</label>
-                </div>
-                <div id="individual-input-section">
-                    <input type="text" id="anime-name-input" placeholder="Nombre del Anime">
-                </div>
-                <div id="batch-input-section" style="display: none;">
-                    <textarea id="anime-batch-input" placeholder="Pega aquí la lista de animes (uno por línea)..." style="min-height: 150px;"></textarea>
-                    <small style="color: var(--text-color); opacity: 0.8; display: block; margin-top: -0.5rem; margin-bottom: 1rem;">Se ignorarán viñetas y líneas en blanco.</small>
-                </div>
+                <input type="text" id="anime-name-input" placeholder="Nombre del Anime">
             </div>
             <select id="day-of-week-input">
                 <option value="Lunes">Lunes</option>
