@@ -23,6 +23,11 @@ export const DOM = {
     modalSeasonName: document.getElementById('modal-season-name'),
     modalSeasonYear: document.getElementById('modal-season-year'),
     saveSeasonBtn: document.getElementById('save-season-btn'),
+    entryModeToggle: document.getElementById('entry-mode-toggle'),
+    entryModeRadios: document.querySelectorAll('input[name="entry-mode"]'),
+    batchAnimeSection: document.getElementById('batch-anime-section'),
+    batchAnimesInput: document.getElementById('batch-animes-input'),
+    individualAnimeSection: document.getElementById('individual-anime-section'),
     newAnimeSection: document.getElementById('new-anime-section'),
     animeNameInput: document.getElementById('anime-name-input'),
     editSeasonSection: document.getElementById('edit-season-section'),
@@ -334,6 +339,9 @@ export function prepareNewAnimeModal() {
     DOM.animeNameInput.title = '';
     DOM.commentsInput.title = '';
 
+    DOM.entryModeToggle.style.display = 'flex';
+    toggleBatchMode(false);
+
     // Clear fields
     DOM.animeNameInput.value = '';
     DOM.dayOfWeekInput.value = 'Lunes';
@@ -341,10 +349,26 @@ export function prepareNewAnimeModal() {
     DOM.openingsList.innerHTML = '';
     DOM.endingsList.innerHTML = '';
     DOM.continuationSelect.innerHTML = '<option value="">Selecciona un anime...</option>';
+    DOM.batchAnimesInput.value = '';
+    const individualRadio = Array.from(DOM.entryModeRadios).find(r => r.value === 'individual');
+    if(individualRadio) individualRadio.checked = true;
+}
+
+export function toggleBatchMode(isBatch) {
+    if (isBatch) {
+        DOM.batchAnimeSection.style.display = 'block';
+        DOM.individualAnimeSection.style.display = 'none';
+    } else {
+        DOM.batchAnimeSection.style.display = 'none';
+        DOM.individualAnimeSection.style.display = 'block';
+    }
 }
 
 export function prepareContinuationModal(animes) {
     DOM.addAnimeModal.querySelector('h2').textContent = 'Añadir Continuación';
+    DOM.entryModeToggle.style.display = 'none';
+    toggleBatchMode(false);
+
     DOM.continuationSection.style.display = 'block';
     DOM.newAnimeSection.style.display = 'none';
     DOM.openingsList.parentElement.style.display = 'none';
@@ -366,6 +390,8 @@ export async function prepareEditAnimeModal(anime) {
     DOM.addAnimeModal.classList.add('edit-mode');
 
     DOM.addAnimeModal.querySelector('h2').textContent = 'Editar Anime';
+    DOM.entryModeToggle.style.display = 'none';
+    toggleBatchMode(false);
 
     // --- Season Selector ---
     DOM.editSeasonSection.style.display = 'block';

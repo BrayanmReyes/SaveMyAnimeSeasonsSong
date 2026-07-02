@@ -153,7 +153,58 @@ export async function handleSaveAnime() {
     const { isContinuationMode, editingAnimeId, currentSeasonId } = getState();
     let success;
 
-    if (isContinuationMode) {
+    // Check entry mode toggle
+    const selectedModeRadio = Array.from(ui.DOM.entryModeRadios).find(r => r.checked);
+    const isBatchMode = !isContinuationMode && !editingAnimeId && selectedModeRadio && selectedModeRadio.value === 'batch';
+
+    if (isBatchMode) {
+        const text = ui.DOM.batchAnimesInput.value.trim();
+        if (!text) return ui.showError('La lista de animes no puede estar vacía.');
+
+        const lines = text.split('\n');
+        let currentDayOfWeek = 'Lunes';
+        const validDaysMap = {
+            'lunes': 'Lunes',
+            'martes': 'Martes',
+            'miercoles': 'Miércoles',
+            'miércoles': 'Miércoles',
+            'jueves': 'Jueves',
+            'viernes': 'Viernes',
+            'sabado': 'Sábado',
+            'sábado': 'Sábado',
+            'domingo': 'Domingo',
+            'especial': 'Especial'
+        };
+        const animesData = [];
+
+        for (let line of lines) {
+            line = line.trim();
+            if (!line) continue;
+
+            // Check if line is a day header
+            const potentialDay = line.replace(/[:\-]/g, '').trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+            if (validDaysMap[potentialDay] || validDaysMap[line.replace(/[:\-]/g, '').trim().toLowerCase()]) {
+                // Try strictly matched lowercased first, fallback to normalized map match
+                currentDayOfWeek = validDaysMap[line.replace(/[:\-]/g, '').trim().toLowerCase()] || validDaysMap[potentialDay];
+                continue;
+            }
+
+            // Remove bullets (e.g., '-', '*', '•', '1. ')
+            const cleanName = line.replace(/^([\-\*\•]|\d+\.)\s+/, '').trim();
+            if (cleanName) {
+                animesData.push({
+                    name: cleanName,
+                    day_of_week: currentDayOfWeek,
+                    season_id: currentSeasonId,
+                    comments: ''
+                });
+            }
+        }
+
+        if (animesData.length === 0) return ui.showError('No se encontraron animes válidos en la lista.');
+        success = await api.addAnimesBatch(animesData);
+    } else if (isContinuationMode) {
         const main_anime_id = parseInt(ui.DOM.continuationSelect.value);
         if (!main_anime_id) return ui.showError('Por favor, selecciona un anime para continuar.');
 
