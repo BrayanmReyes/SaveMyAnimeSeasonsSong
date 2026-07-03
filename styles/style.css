@@ -233,8 +233,8 @@ button:hover {
 
 .anime-card {
     background-color: var(--card-bg);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px var(--shadow-color);
+    border-radius: 20px;
+    box-shadow: var(--glow-shadow);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -243,7 +243,7 @@ button:hover {
 
 .anime-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 15px var(--shadow-color);
+    box-shadow: var(--glow-shadow-hover);
 }
 
 .anime-card.expanded {
@@ -599,7 +599,7 @@ legend {
     color: var(--text-color);
     border: 1px solid var(--border-color);
     padding: 1.5rem;
-    border-radius: 12px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -607,7 +607,7 @@ legend {
     gap: 1rem;
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-    box-shadow: 0 4px 6px var(--shadow-color);
+    box-shadow: var(--glow-shadow);
     overflow: hidden;
     position: relative;
     text-align: center;
@@ -615,7 +615,7 @@ legend {
 
 .artist-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 24px var(--shadow-color);
+    box-shadow: var(--glow-shadow-hover);
     border-color: var(--primary-main);
 }
 
