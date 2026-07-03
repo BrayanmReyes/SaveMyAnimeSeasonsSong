@@ -69,6 +69,12 @@ function setupEventListeners() {
     ui.DOM.addContinuationBtn.addEventListener('click', handlers.handleAddContinuation);
     ui.DOM.saveAnimeBtn.addEventListener('click', handlers.handleSaveAnime);
 
+    ui.DOM.entryModeRadios.forEach(radio => {
+        radio.addEventListener('change', (e) => {
+            ui.toggleBatchMode(e.target.value === 'batch');
+        });
+    });
+
     ui.DOM.animeListContainer.addEventListener('click', handlers.handleAnimeListClick);
 
     ui.DOM.closeBtns.forEach(btn => btn.addEventListener('click', handlers.handleModalClose));

@@ -88,6 +88,14 @@
         <div class="modal-content">
             <span class="close-btn">&times;</span>
             <h2>Agregar Anime</h2>
+            <div id="entry-mode-toggle" class="form-group mode-toggle-group" style="display: flex; gap: 1rem; margin-bottom: 1rem; align-items: center; justify-content: center;">
+                <label>
+                    <input type="radio" name="entry-mode" value="individual" checked> Individual
+                </label>
+                <label>
+                    <input type="radio" name="entry-mode" value="batch"> Por Lote
+                </label>
+            </div>
             <div id="edit-season-section" class="form-group" style="display: none;">
                 <label for="anime-season-select">Cambiar Temporada:</label>
                 <select id="anime-season-select"></select>
@@ -96,34 +104,41 @@
                 <label for="continuation-select">Seleccionar anime a continuar:</label>
                 <select id="continuation-select"></select>
             </div>
-            <div id="new-anime-section">
-                <input type="text" id="anime-name-input" placeholder="Nombre del Anime">
+
+            <div id="batch-anime-section" style="display: none;">
+                <textarea id="batch-animes-input" placeholder="Pega aquí la lista de animes. Puede incluir días de la semana y viñetas (ej: Lunes \n - Anime 1 \n - Anime 2)" style="min-height: 200px;"></textarea>
             </div>
-            <select id="day-of-week-input">
-                <option value="Lunes">Lunes</option>
-                <option value="Martes">Martes</option>
-                <option value="Miércoles">Miércoles</option>
-                <option value="Jueves">Jueves</option>
-                <option value="Viernes">Viernes</option>
-                <option value="Sábado">Sábado</option>
-                <option value="Domingo">Domingo</option>
-                <option value="Especial">Especial (OVA, Película, etc.)</option>
-            </select>
-            <fieldset>
-                <legend>Openings</legend>
-                <div id="openings-list" class="dynamic-list"></div>
-                <button type="button" id="add-opening-btn" class="add-entry-btn" title="Agregar Opening">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                </button>
-            </fieldset>
-            <fieldset>
-                <legend>Endings</legend>
-                <div id="endings-list" class="dynamic-list"></div>
-                <button type="button" id="add-ending-btn" class="add-entry-btn" title="Agregar Ending">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                </button>
-            </fieldset>
-            <textarea id="comments-input" placeholder="Comentarios"></textarea>
+
+            <div id="individual-anime-section">
+                <div id="new-anime-section">
+                    <input type="text" id="anime-name-input" placeholder="Nombre del Anime">
+                </div>
+                <select id="day-of-week-input">
+                    <option value="Lunes">Lunes</option>
+                    <option value="Martes">Martes</option>
+                    <option value="Miércoles">Miércoles</option>
+                    <option value="Jueves">Jueves</option>
+                    <option value="Viernes">Viernes</option>
+                    <option value="Sábado">Sábado</option>
+                    <option value="Domingo">Domingo</option>
+                    <option value="Especial">Especial (OVA, Película, etc.)</option>
+                </select>
+                <fieldset>
+                    <legend>Openings</legend>
+                    <div id="openings-list" class="dynamic-list"></div>
+                    <button type="button" id="add-opening-btn" class="add-entry-btn" title="Agregar Opening">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    </button>
+                </fieldset>
+                <fieldset>
+                    <legend>Endings</legend>
+                    <div id="endings-list" class="dynamic-list"></div>
+                    <button type="button" id="add-ending-btn" class="add-entry-btn" title="Agregar Ending">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+                    </button>
+                </fieldset>
+                <textarea id="comments-input" placeholder="Comentarios"></textarea>
+            </div>
             <button id="save-anime-btn">Guardar</button>
         </div>
     </div>
