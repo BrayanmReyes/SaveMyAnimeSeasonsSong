@@ -1,23 +1,25 @@
 /* theme.css */
 
 :root {
-    --primary-light: #60a5fa;
-    --primary-main: #3b82f6;
-    --primary-dark: #2563eb;
-    --primary-gradient: linear-gradient(135deg, #60a5fa, #3b82f6);
+    --primary-light: #7dd3fc;
+    --primary-main: #0ea5e9;
+    --primary-dark: #0284c7;
+    --primary-gradient: linear-gradient(135deg, #38bdf8, #0ea5e9);
 
-    --secondary-color: #1f2937;
-    --background-color: #f9fafb;
-    --text-color: #111827;
+    --secondary-color: #0f172a;
+    --background-color: #f8fafc;
+    --text-color: #0f172a;
     --card-bg: #ffffff;
-    --border-color: #e5e7eb;
-    --shadow-color: rgba(0, 0, 0, 0.07);
+    --border-color: #e2e8f0;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --glow-shadow: 0 4px 14px 0 rgba(14, 165, 233, 0.2);
+    --glow-shadow-hover: 0 6px 20px 0 rgba(14, 165, 233, 0.35);
     --danger-color: #ef4444;
     --danger-color-dark: #dc2626;
 
-    --song-item-bg: #f9fafb;
-    --song-item-odd-bg: #f3f4f6;
-    --song-detail-text: #4b5563;
+    --song-item-bg: #f1f5f9;
+    --song-item-odd-bg: #e2e8f0;
+    --song-detail-text: #475569;
     --action-primary-bg: var(--primary-main);
     --action-primary-hover-bg: var(--primary-dark);
     --action-add-color: #10b981;
@@ -29,29 +31,31 @@
     --action-danger-hover-bg: #dc2626;
     --action-add-hover-bg: #059669; /* Darker green */
     --action-add-border-color: var(--primary-main);
-    --action-add-bg-light: rgba(59, 130, 246, 0.1);
+    --action-add-bg-light: rgba(14, 165, 233, 0.1);
 }
 
 body.dark-mode {
-    --primary-light: #4f46e5;
+    --primary-light: #818cf8;
     --primary-main: #6366f1;
-    --primary-dark: #818cf8;
-    --primary-gradient: linear-gradient(135deg, #4338ca, #6366f1);
+    --primary-dark: #4f46e5;
+    --primary-gradient: linear-gradient(135deg, #818cf8, #6366f1);
 
-    --secondary-color: #e5e7eb; /* Lighter text for titles */
-    --background-color: #0f172a; /* Deeper blue-gray */
+    --secondary-color: #f8fafc; /* Lighter text for titles */
+    --background-color: #020617; /* Deeper blue-gray */
     --text-color: #cbd5e1;       /* Softer white */
-    --card-bg: #1e293b;          /* Slightly lighter card bg */
-    --border-color: #334155;     /* More visible border */
+    --card-bg: #0f172a;          /* Slightly lighter card bg */
+    --border-color: #1e293b;     /* More visible border */
     --shadow-color: rgba(0, 0, 0, 0.5);
+    --glow-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
+    --glow-shadow-hover: 0 6px 20px 0 rgba(99, 102, 241, 0.5);
 
-    --song-item-bg: #334155;
-    --song-item-odd-bg: #475569;
+    --song-item-bg: #1e293b;
+    --song-item-odd-bg: #334155;
     --song-detail-text: #94a3b8;
 
     --action-primary-bg: var(--primary-main);
     --action-primary-hover-bg: var(--primary-light);
-    --action-secondary-bg: #475569;
+    --action-secondary-bg: #334155;
     --action-danger-bg: #f87171;
     --action-danger-hover-bg: #ef4444;
     --action-add-hover-bg: #10b981; /* Brighter green for hover */
@@ -62,7 +66,7 @@ body.dark-mode {
     --action-edit-border-light: rgba(167, 139, 250, 0.2);
     --action-delete-color: #f87171;
     --action-add-border-color: var(--primary-dark);
-    --action-add-bg-light: rgba(129, 140, 248, 0.12);
+    --action-add-bg-light: rgba(99, 102, 241, 0.12);
 }
 
 body.dark-mode select {
