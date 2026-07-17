@@ -16,14 +16,15 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
-          # Pinging the Supabase Auth health endpoint to simulate activity and prevent auto-pausing.
-          # This is a safe and recommended way to keep the project active without mutating data.
-          response=$(curl -s -w "%{http_code}" -o /dev/null -X GET "${SUPABASE_URL}/auth/v1/health" \
-            -H "apikey: ${SUPABASE_ANON_KEY}")
+          # Querying the database to simulate activity and prevent auto-pausing.
+          # Supabase tracks actual database activity, so we perform a lightweight query.
+          response=$(curl -s -w "%{http_code}" -o /dev/null -X GET "${SUPABASE_URL}/rest/v1/seasons?select=id&limit=1" \
+            -H "apikey: ${SUPABASE_ANON_KEY}" \
+            -H "Authorization: Bearer ${SUPABASE_ANON_KEY}")
 
           if [ "$response" -eq 200 ]; then
-            echo "Supabase Auth health endpoint pinged successfully! Status: $response"
+            echo "Supabase database queried successfully! Status: $response"
           else
-            echo "Failed to ping Supabase. Status: $response"
+            echo "Failed to query Supabase database. Status: $response"
             exit 1
           fi
